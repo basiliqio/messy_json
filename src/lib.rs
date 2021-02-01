@@ -1,7 +1,6 @@
-use getset::Getters;
 use serde::de::{DeserializeSeed, Deserializer, MapAccess, SeqAccess, Visitor};
 use std::borrow::Cow;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 mod array;
 mod number;
@@ -31,18 +30,19 @@ pub enum MessyJsonValue<'a> {
     Array(Vec<MessyJsonValue<'a>>),
     Bool(bool),
     Number(u128),
-    Obj(HashMap<Cow<'a, str>, MessyJsonValue<'a>>),
+    Obj(BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>),
     String(Cow<'a, str>),
     Null,
 }
 
 impl<'de> Visitor<'de> for &'de MessyJson {
     type Value = MessyJsonValue<'de>;
-
+    #[inline]
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(formatter, "any valid json object or array")
     }
 
+    #[inline]
     fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
     where
         A: SeqAccess<'de>,
@@ -61,14 +61,15 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             )),
         }
     }
+
+    #[inline]
     fn visit_map<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
     where
         A: MapAccess<'de>,
     {
         match self {
             MessyJson::Obj(obj_type) => {
-                let mut res: HashMap<Cow<'de, str>, Self::Value> =
-                    HashMap::with_capacity(seq.size_hint().unwrap_or(10));
+                let mut res: BTreeMap<Cow<'de, str>, Self::Value> = BTreeMap::new();
                 while let Some(key_seed) =
                     seq.next_key_seed(&MessyJson::String(MessyJsonScalar { optional: false }))?
                 {
@@ -109,6 +110,8 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             )),
         }
     }
+
+    #[inline]
     fn visit_bool<A>(self, v: bool) -> Result<Self::Value, A>
     where
         A: serde::de::Error,
@@ -121,6 +124,8 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             )),
         }
     }
+
+    #[inline]
     fn visit_borrowed_str<A>(self, v: &'de str) -> Result<Self::Value, A>
     where
         A: serde::de::Error,
@@ -134,6 +139,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
         }
     }
 
+    #[inline]
     fn visit_u64<A>(self, v: u64) -> Result<Self::Value, A>
     where
         A: serde::de::Error,
@@ -147,6 +153,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
         }
     }
 
+    #[inline]
     fn visit_u128<A>(self, v: u128) -> Result<Self::Value, A>
     where
         A: serde::de::Error,
@@ -160,6 +167,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
         }
     }
 
+    #[inline]
     fn visit_none<A>(self) -> Result<Self::Value, A>
     where
         A: serde::de::Error,
@@ -173,6 +181,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
         }
     }
 
+    #[inline]
     fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
     where
         D: Deserializer<'de>,
@@ -193,7 +202,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
 
 impl<'de> DeserializeSeed<'de> for &'de MessyJson {
     type Value = MessyJsonValue<'de>;
-
+    #[inline]
     fn deserialize<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
     where
         D: Deserializer<'de>,

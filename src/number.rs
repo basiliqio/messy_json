@@ -1,7 +1,6 @@
 use super::*;
 
-#[derive(Clone, Debug, PartialEq, Eq, Getters)]
-#[getset(get = "pub")]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonNumeric {
     optional: bool,
     type_: MessyJsonNumberType,
@@ -13,7 +12,7 @@ impl MessyJsonNumeric {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum MessyJsonNumberType {
     U64,
     U128,
@@ -22,5 +21,17 @@ pub enum MessyJsonNumberType {
 impl Default for MessyJsonNumberType {
     fn default() -> Self {
         MessyJsonNumberType::U64
+    }
+}
+
+impl MessyJsonNumeric {
+    #[inline]
+    pub fn type_(&self) -> MessyJsonNumberType {
+        self.type_
+    }
+
+    #[inline]
+    pub fn optional(&self) -> bool {
+        self.optional
     }
 }

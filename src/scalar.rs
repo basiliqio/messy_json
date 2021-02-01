@@ -1,7 +1,6 @@
 use super::*;
 
-#[derive(Clone, Debug, PartialEq, Eq, Getters)]
-#[getset(get = "pub")]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonScalar {
     pub optional: bool,
 }
@@ -9,5 +8,10 @@ pub struct MessyJsonScalar {
 impl MessyJsonScalar {
     pub fn new(optional: bool) -> Self {
         MessyJsonScalar { optional }
+    }
+
+    #[inline]
+    pub fn optional(&self) -> bool {
+        self.optional
     }
 }
