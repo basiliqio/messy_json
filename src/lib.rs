@@ -40,7 +40,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     type Value = MessyJsonValue<'de>;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(formatter, "anything")
+        write!(formatter, "any valid json object or array")
     }
 
     fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
@@ -57,7 +57,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             }
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Seq,
-                &"other",
+                &"Sequence",
             )),
         }
     }
@@ -75,25 +75,26 @@ impl<'de> Visitor<'de> for &'de MessyJson {
                     let (val_schema, key_str) = match key_seed {
                         MessyJsonValue::String(val) => (
                             obj_type.properties().get(&*val).ok_or_else(|| {
-                                serde::de::Error::unknown_field(
-									&*val,
-									&[] // TODO
-									// &obj_type
-									// 	.keys()
-									// 	.filter_map(|s| match res.contains_key(s.as_str()) {
-									// 		false => Some(s.as_str()),
-									// 		true => None,
-									// 	})
-									// 	.collect::<Vec<&str>>(),
-								)
+                                serde::de::Error::custom(format!(
+                                    "The key `{}` is unknown. The expected keys were [{}]",
+                                    val,
+                                    obj_type
+                                        .properties()
+                                        .keys()
+                                        .filter_map(|s| match res.contains_key(s.as_str()) {
+                                            false => Some(s.as_str()),
+                                            true => None,
+                                        })
+                                        .collect::<Vec<&str>>()
+                                        .join(",")
+                                ))
                             })?,
                             val,
                         ),
                         _ => {
                             return Err(serde::de::Error::invalid_type(
-                                // TODO better
                                 serde::de::Unexpected::Map,
-                                &"other",
+                                &"String",
                             ));
                         }
                     };
@@ -104,7 +105,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             }
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Map,
-                &"other",
+                &"Map",
             )),
         }
     }
@@ -128,7 +129,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             MessyJson::String(_) => Ok(MessyJsonValue::String(Cow::from(v))),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Str(v),
-                &"other",
+                &"String",
             )),
         }
     }
@@ -141,7 +142,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             MessyJson::Number(_) => Ok(MessyJsonValue::Number(v as u128)),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Other("number"),
-                &"other",
+                &"Number",
             )),
         }
     }
@@ -154,7 +155,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             MessyJson::Number(_) => Ok(MessyJsonValue::Number(v)),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Other("number"),
-                &"other",
+                &"Number",
             )),
         }
     }
@@ -167,7 +168,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
             MessyJson::Null => Ok(MessyJsonValue::Null),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Other("null"),
-                &"other",
+                &"Null",
             )),
         }
     }
