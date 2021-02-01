@@ -33,10 +33,9 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: MapAccess<'de>,
     {
-        let mut res: BTreeMap<Cow<'de, str>, Self::Value> = BTreeMap::new();
-
         match self {
             MessyJson::Obj(obj_type) => {
+                let mut res: BTreeMap<Cow<'de, str>, Self::Value> = BTreeMap::new();
                 while let Some(key_seed) =
                     seq.next_key_seed(&MessyJson::String(MessyJsonScalar { optional: false }))?
                 {

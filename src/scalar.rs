@@ -1,5 +1,3 @@
-use super::*;
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonScalar {
     pub optional: bool,

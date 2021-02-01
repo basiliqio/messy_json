@@ -12,16 +12,21 @@ const DUMMY_OBJ: &str = r#"
 }
 "#;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct DummySerdeStructNested<'a> {
     hola: Cow<'a, str>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct DummySerdeStruct<'a> {
     hello: DummySerdeStructNested<'a>,
 }
+
 fn parse_serde_value() -> Value {
+    serde_json::from_str(DUMMY_OBJ).unwrap()
+}
+
+fn parse_serde_struct() -> DummySerdeStruct<'static> {
     serde_json::from_str(DUMMY_OBJ).unwrap()
 }
 
@@ -53,6 +58,7 @@ fn parse_messy_json(schema: &MessyJson) -> MessyJsonValue {
 fn main() {
     let prepared = gen_messy_json_schema();
 
+    println!("Struct : {:#?}", parse_serde_struct());
     println!("Value : {:#?}", parse_serde_value());
     println!("MessyJsonValue : {:#?}", parse_messy_json(&prepared));
 }
