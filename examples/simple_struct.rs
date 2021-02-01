@@ -1,6 +1,8 @@
-use super::*;
+extern crate messy_json;
+use messy_json::*;
 use serde::{de::DeserializeSeed, Deserialize, Serialize};
 use serde_json::Value;
+use std::borrow::Cow;
 
 const DUMMY_OBJ: &str = r#"
 {
@@ -19,13 +21,8 @@ struct DummySerdeStructNested<'a> {
 struct DummySerdeStruct<'a> {
     hello: DummySerdeStructNested<'a>,
 }
-
-fn parse_serde() {
-    let _parsed: DummySerdeStruct = serde_json::from_str(DUMMY_OBJ).unwrap();
-}
-
-fn parse_serde_value() {
-    let _parsed: Value = serde_json::from_str(DUMMY_OBJ).unwrap();
+fn parse_serde_value() -> Value {
+    serde_json::from_str(DUMMY_OBJ).unwrap()
 }
 
 fn gen_messy_json_schema() -> MessyJson {
@@ -48,22 +45,14 @@ fn gen_messy_json_schema() -> MessyJson {
     )))
 }
 
-fn parse_messy_json(schema: &MessyJson) {
+fn parse_messy_json(schema: &MessyJson) -> MessyJsonValue {
     let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
-    let _parsed: MessyJsonValue = schema.deserialize(&mut deserializer).unwrap();
+    schema.deserialize(&mut deserializer).unwrap()
 }
 
-pub fn criterion_benchmark(c: &mut Criterion) {
+fn main() {
     let prepared = gen_messy_json_schema();
-    c.bench_function("obj_serde_simple_deserialize_struct", |b| {
-        b.iter(|| parse_serde())
-    });
-    c.bench_function("obj_serde_simple_deserialize_value", |b| {
-        b.iter(|| parse_serde_value())
-    });
-    c.bench_with_input(
-        criterion::BenchmarkId::new("obj_messy_json_simple_deserialize_prepared", "dummy_obj"),
-        &prepared,
-        |b, i| b.iter(|| parse_messy_json(i)),
-    );
+
+    println!("Value : {:#?}", parse_serde_value());
+    println!("MessyJsonValue : {:#?}", parse_messy_json(&prepared));
 }

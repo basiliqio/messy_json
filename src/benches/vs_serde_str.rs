@@ -43,11 +43,8 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| parse_serde())
     });
     c.bench_function("str_serde_simple_deserialize_value", |b| {
-        b.iter(|| parse_serde())
+        b.iter(|| parse_serde_value())
     });
-    // c.bench_function("messy_json_simple_deserialize_unprepared", |b| {
-    //     b.iter(|| parse_messy_json(&gen_messy_json_schema()))
-    // });
     c.bench_function("str_messy_json_simple_deserialize_prepared", |b| {
         let prepared = gen_messy_json_schema();
         b.iter(|| parse_messy_json(&prepared))
