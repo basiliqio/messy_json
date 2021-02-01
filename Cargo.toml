@@ -11,3 +11,13 @@ serde = "1"
 serde_json = "1"
 thiserror = "1"
 getset = "0.1"
+
+
+[dev-dependencies]
+criterion = "0.3"
+serde = { version = "1", features = [ "derive" ] }
+
+[[bench]]
+name = "messy_json_benches"
+path = "src/benches/mod.rs"
+harness = false
