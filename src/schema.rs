@@ -1,5 +1,10 @@
 use super::*;
 
+/// ## Schema of a JSON Value
+///
+/// This enum describes in broad strokes how a JSON should look like when deserialized.
+///
+/// At deserialization, this enum will ensure that the JSON Value corresponds to this schema.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum MessyJson {
     Array(Box<MessyJsonArray>),
@@ -11,10 +16,12 @@ pub enum MessyJson {
 }
 
 impl MessyJson {
+    /// Return a builder, to deserialize an object with
     pub fn builder(&self) -> MessyJsonBuilder {
         MessyJsonBuilder::new(self)
     }
 
+    /// Check if the inner value of this enum is optional
     pub fn optional(&self) -> bool {
         match self {
             MessyJson::Array(x) => x.optional(),
@@ -27,29 +34,38 @@ impl MessyJson {
     }
 }
 
+/// ## Schema deserializer of a JSON Value
+///
+/// This struct takes a reference to a [MessyJson](MessyJson) and expose `serde`'s
+/// deserialization trait.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonBuilder<'a> {
     schema: &'a MessyJson,
 }
 
 impl<'a> MessyJsonBuilder<'a> {
+    /// Create a new builder from a [MessyJson](MessyJson)
     #[inline]
     fn new(schema: &'a MessyJson) -> Self {
         MessyJsonBuilder { schema }
     }
 
+    /// Get the inner [MessyJson](MessyJson)
     #[inline]
     pub fn inner(&self) -> &'a MessyJson {
         &self.schema
     }
 
+    /// Create a new nested schema providing the nested schema and self
     #[inline]
     pub(crate) fn new_nested(&self, schema: &'a MessyJson) -> Self {
         MessyJsonBuilder { schema }
     }
 
+    /// Compare that a deserialized object have all the required fields are available.
+    ///
+    /// Return a missing key if any, None otherwise
     pub(crate) fn compare_obj(
-        &self,
         schema: &MessyJsonObject,
         res: &BTreeMap<Cow<'_, str>, MessyJsonValue>,
     ) -> Option<String> {
@@ -61,22 +77,6 @@ impl<'a> MessyJsonBuilder<'a> {
             itertools::EitherOrBoth::Left((_key, val)) => !val.optional(),
             itertools::EitherOrBoth::Right(_) => true,
         });
-        //     if !is_done {
-        //         if let Some(val_key) = res_iter.peek() {
-        //             if val.optional() {
-        //                 continue 'schema;
-        //             } else if key.as_str() != *val_key {
-        //                 return Some(val_key.to_string());
-        //             }
-        //             res_iter.next();
-        //             continue 'schema;
-        //         }
-        //     }
-        //     is_done = true;
-        //     if !val.optional() {
-        //         return Some(key.to_string());
-        //     }
-        // }
         el.map(|x| {
             match x {
                 itertools::EitherOrBoth::Both(_, x) => x,
