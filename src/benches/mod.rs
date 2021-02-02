@@ -4,7 +4,9 @@ use std::borrow::Cow;
 extern crate messy_json;
 use messy_json::*;
 
+mod vs_serde_dummy_obj;
 mod vs_serde_obj;
+mod vs_serde_optional_obj;
 mod vs_serde_str;
 
 criterion_group!(benches_obj, vs_serde_obj::criterion_benchmark);

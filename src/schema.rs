@@ -53,27 +53,38 @@ impl<'a> MessyJsonBuilder<'a> {
         schema: &MessyJsonObject,
         res: &BTreeMap<Cow<'_, str>, MessyJsonValue>,
     ) -> Option<String> {
-        let mut res_iter = res.keys().peekable();
-        let mut is_done = false;
-
-        'schema: for (key, val) in schema.properties().iter() {
-            if !is_done {
-                if let Some(val_key) = res_iter.peek() {
-                    if val.optional() {
-                        continue 'schema;
-                    } else if key.as_str() != *val_key {
-                        return Some(val_key.to_string());
-                    }
-                    res_iter.next();
-                    continue 'schema;
-                }
+        let el = itertools::merge_join_by(schema.properties(), res.keys(), |(key1, _), key2| {
+            Ord::cmp(key1.as_str(), key2)
+        })
+        .find(|merged| match merged {
+            itertools::EitherOrBoth::Both(_, _) => false,
+            itertools::EitherOrBoth::Left((_key, val)) => !val.optional(),
+            itertools::EitherOrBoth::Right(_) => true,
+        });
+        //     if !is_done {
+        //         if let Some(val_key) = res_iter.peek() {
+        //             if val.optional() {
+        //                 continue 'schema;
+        //             } else if key.as_str() != *val_key {
+        //                 return Some(val_key.to_string());
+        //             }
+        //             res_iter.next();
+        //             continue 'schema;
+        //         }
+        //     }
+        //     is_done = true;
+        //     if !val.optional() {
+        //         return Some(key.to_string());
+        //     }
+        // }
+        el.map(|x| {
+            match x {
+                itertools::EitherOrBoth::Both(_, x) => x,
+                itertools::EitherOrBoth::Left((key, _val)) => key.as_str(),
+                itertools::EitherOrBoth::Right(x) => x,
             }
-            is_done = true;
-            if !val.optional() {
-                return Some(key.to_string());
-            }
-        }
-        None
+            .to_string()
+        })
     }
 }
 
