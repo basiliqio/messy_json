@@ -43,17 +43,14 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
                         MessyJsonValue::String(val) => (
                             obj_type.properties().get(&*val).ok_or_else(|| {
                                 serde::de::Error::custom(format!(
-                                    "The key `{}` is unknown. The expected keys were [{}]",
+                                    "The key `{}` is unknown. The expected keys were `[ {} ]`",
                                     val,
                                     obj_type
                                         .properties()
                                         .keys()
-                                        .filter_map(|s| match res.contains_key(s.as_str()) {
-                                            false => Some(s.as_str()),
-                                            true => None,
-                                        })
+                                        .map(|s| s.as_str())
                                         .collect::<Vec<&str>>()
-                                        .join(",")
+                                        .join(", ")
                                 ))
                             })?,
                             val,
@@ -68,6 +65,9 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
                     let nested_val = self.new_nested(&val_schema);
                     res.insert(key_str, seq.next_value_seed(nested_val)?.take());
                 }
+                self.compare_obj(obj_type, &res).map_or(Ok(()), |x| {
+                    Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
+                })?;
                 Ok(MessyJsonValueContainer::new(MessyJsonValue::Obj(res)))
             }
             _ => Err(serde::de::Error::invalid_type(

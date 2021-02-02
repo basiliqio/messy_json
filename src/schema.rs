@@ -14,6 +14,17 @@ impl MessyJson {
     pub fn builder<'a>(&'a self) -> MessyJsonBuilder<'a> {
         MessyJsonBuilder::new(self)
     }
+
+    pub fn optional(&self) -> bool {
+        match self {
+            MessyJson::Array(x) => x.optional(),
+            MessyJson::Bool(x) => x.optional(),
+            MessyJson::Number(x) => x.optional(),
+            MessyJson::Obj(x) => x.optional(),
+            MessyJson::String(x) => x.optional(),
+            MessyJson::Null => true,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -35,6 +46,35 @@ impl<'a> MessyJsonBuilder<'a> {
     #[inline]
     pub(crate) fn new_nested(&self, schema: &'a MessyJson) -> Self {
         MessyJsonBuilder { schema }
+    }
+
+    pub(crate) fn compare_obj(
+        &self,
+        schema: &MessyJsonObject,
+        res: &BTreeMap<Cow<'_, str>, MessyJsonValue>,
+    ) -> Option<String> {
+        let mut res_iter = res.keys().peekable();
+        let mut schema_iter = schema.properties().iter();
+        let mut is_done = false;
+
+        'schema: while let Some((key, val)) = schema_iter.next() {
+            if !is_done {
+                while let Some(val_key) = res_iter.peek() {
+                    if val.optional() {
+                        continue 'schema;
+                    } else if key.as_str() != *val_key {
+                        return Some(val_key.to_string());
+                    }
+                    res_iter.next();
+                    continue 'schema;
+                }
+            }
+            is_done = true;
+            if !val.optional() {
+                return Some(key.to_string());
+            }
+        }
+        None
     }
 }
 
