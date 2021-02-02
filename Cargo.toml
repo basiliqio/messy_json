@@ -15,6 +15,12 @@ thiserror = "1"
 criterion = "0.3"
 serde = { version = "1", features = [ "derive" ] }
 
+[dev-dependencies.cargo-husky]
+version = "1"
+default-features = false # Disable features which are enabled by default
+features = ["precommit-hook", "run-cargo-check", "run-cargo-fmt"]
+
+
 # TODO : Use `bumpalo` for greater performance while deserializing
 
 [[bench]]

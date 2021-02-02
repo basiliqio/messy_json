@@ -50,9 +50,9 @@ fn gen_messy_json_schema() -> MessyJson {
     )))
 }
 
-fn parse_messy_json(schema: &MessyJson) -> MessyJsonValue {
+fn parse_messy_json(schema: &MessyJson) -> MessyJsonValueContainer {
     let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
-    schema.deserialize(&mut deserializer).unwrap()
+    schema.builder().deserialize(&mut deserializer).unwrap()
 }
 
 fn main() {

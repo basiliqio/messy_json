@@ -12,13 +12,13 @@ fn simple() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed: MessyJsonValue = schema.deserialize(&mut deserializer).unwrap();
+    let parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
     assert_eq!(
-        matches!(parsed, MessyJsonValue::Array(_)),
+        matches!(parsed.inner(), MessyJsonValue::Array(_)),
         true,
         "The root should be an array"
     );
-    match parsed {
+    match parsed.inner() {
         MessyJsonValue::Array(arr) => {
             assert_eq!(arr.len(), 2, "The root object should contain 2 keys");
             assert_eq!(

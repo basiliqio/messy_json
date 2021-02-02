@@ -20,7 +20,7 @@ impl<'a> std::ops::Deref for MessyJsonValueContainer<'a> {
 
     #[inline]
     fn deref(&self) -> &Self::Target {
-        self.val()
+        self.inner()
     }
 }
 
@@ -31,7 +31,7 @@ impl<'a> MessyJsonValueContainer<'a> {
     }
 
     #[inline]
-    pub fn val(&self) -> &MessyJsonValue<'a> {
+    pub fn inner(&self) -> &MessyJsonValue<'a> {
         &self.val
     }
 
