@@ -10,14 +10,42 @@ pub enum MessyJson {
     Null,
 }
 
-impl<'de> DeserializeSeed<'de> for &'de MessyJson {
-    type Value = MessyJsonValue<'de>;
+impl MessyJson {
+    pub fn builder<'a>(&'a self) -> MessyJsonBuilder<'a> {
+        MessyJsonBuilder::new(self)
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct MessyJsonBuilder<'a> {
+    schema: &'a MessyJson,
+}
+
+impl<'a> MessyJsonBuilder<'a> {
+    #[inline]
+    fn new(schema: &'a MessyJson) -> Self {
+        MessyJsonBuilder { schema }
+    }
+
+    #[inline]
+    pub fn inner(&self) -> &'a MessyJson {
+        &self.schema
+    }
+
+    #[inline]
+    pub(crate) fn new_nested(&self, schema: &'a MessyJson) -> Self {
+        MessyJsonBuilder { schema }
+    }
+}
+
+impl<'de> DeserializeSeed<'de> for MessyJsonBuilder<'de> {
+    type Value = MessyJsonValueContainer<'de>;
     #[inline]
     fn deserialize<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
     where
         D: Deserializer<'de>,
     {
-        match self {
+        match self.inner() {
             MessyJson::Bool(opt) => match opt.optional() {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_bool(self),

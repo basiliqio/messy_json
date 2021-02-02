@@ -1,4 +1,4 @@
-use serde::de::{DeserializeSeed, Deserializer, MapAccess, SeqAccess, Visitor};
+use serde::de::{Deserialize, DeserializeSeed, Deserializer, MapAccess, SeqAccess, Visitor};
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 
@@ -17,5 +17,5 @@ pub use array::MessyJsonArray;
 pub use number::{MessyJsonNumberType, MessyJsonNumeric};
 pub use object::MessyJsonObject;
 pub use scalar::MessyJsonScalar;
-pub use schema::MessyJson;
-pub use value::MessyJsonValue;
+pub use schema::{MessyJson, MessyJsonBuilder};
+pub use value::{MessyJsonValue, MessyJsonValueContainer};

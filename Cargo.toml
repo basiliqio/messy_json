@@ -15,6 +15,8 @@ thiserror = "1"
 criterion = "0.3"
 serde = { version = "1", features = [ "derive" ] }
 
+# TODO : Use `bumpalo` for greater performance while deserializing
+
 [[bench]]
 name = "messy_json_benches"
 path = "src/benches/mod.rs"

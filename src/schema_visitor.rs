@@ -1,7 +1,7 @@
 use super::*;
 
-impl<'de> Visitor<'de> for &'de MessyJson {
-    type Value = MessyJsonValue<'de>;
+impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
+    type Value = MessyJsonValueContainer<'de>;
     #[inline]
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(formatter, "any valid json object or array")
@@ -12,14 +12,14 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: SeqAccess<'de>,
     {
-        let mut res: Vec<Self::Value> = Vec::with_capacity(seq.size_hint().unwrap_or(0));
+        let mut res: Vec<MessyJsonValue> = Vec::with_capacity(seq.size_hint().unwrap_or(0));
 
-        match self {
+        match self.inner() {
             MessyJson::Array(arr_type) => {
-                while let Some(elem) = seq.next_element_seed(arr_type.items())? {
-                    res.push(elem)
+                while let Some(elem) = seq.next_element_seed(self.new_nested(arr_type.items()))? {
+                    res.push(elem.take())
                 }
-                Ok(MessyJsonValue::Array(res))
+                Ok(MessyJsonValueContainer::new(MessyJsonValue::Array(res)))
             }
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Seq,
@@ -33,13 +33,13 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: MapAccess<'de>,
     {
-        match self {
+        match self.inner() {
             MessyJson::Obj(obj_type) => {
-                let mut res: BTreeMap<Cow<'de, str>, Self::Value> = BTreeMap::new();
-                while let Some(key_seed) =
-                    seq.next_key_seed(&MessyJson::String(MessyJsonScalar { optional: false }))?
-                {
-                    let (val_schema, key_str) = match key_seed {
+                let mut res: BTreeMap<Cow<'de, str>, MessyJsonValue> = BTreeMap::new();
+                while let Some(key_seed) = seq.next_key_seed(
+                    self.new_nested(&MessyJson::String(MessyJsonScalar { optional: false })),
+                )? {
+                    let (val_schema, key_str) = match key_seed.take() {
                         MessyJsonValue::String(val) => (
                             obj_type.properties().get(&*val).ok_or_else(|| {
                                 serde::de::Error::custom(format!(
@@ -65,9 +65,10 @@ impl<'de> Visitor<'de> for &'de MessyJson {
                             ));
                         }
                     };
-                    res.insert(key_str, seq.next_value_seed(val_schema)?);
+                    let nested_val = self.new_nested(&val_schema);
+                    res.insert(key_str, seq.next_value_seed(nested_val)?.take());
                 }
-                Ok(MessyJsonValue::Obj(res))
+                Ok(MessyJsonValueContainer::new(MessyJsonValue::Obj(res)))
             }
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Map,
@@ -81,8 +82,8 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: serde::de::Error,
     {
-        match self {
-            MessyJson::Bool(_) => Ok(MessyJsonValue::Bool(v)),
+        match self.inner() {
+            MessyJson::Bool(_) => Ok(MessyJsonValueContainer::new(MessyJsonValue::Bool(v))),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Bool(v),
                 &"other",
@@ -95,8 +96,10 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: serde::de::Error,
     {
-        match self {
-            MessyJson::String(_) => Ok(MessyJsonValue::String(Cow::from(v))),
+        match self.inner() {
+            MessyJson::String(_) => Ok(MessyJsonValueContainer::new(MessyJsonValue::String(
+                Cow::from(v),
+            ))),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Str(v),
                 &"String",
@@ -109,8 +112,10 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: serde::de::Error,
     {
-        match self {
-            MessyJson::Number(_) => Ok(MessyJsonValue::Number(v as u128)),
+        match self.inner() {
+            MessyJson::Number(_) => Ok(MessyJsonValueContainer::new(MessyJsonValue::Number(
+                v as u128,
+            ))),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Other("number"),
                 &"Number",
@@ -123,8 +128,8 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: serde::de::Error,
     {
-        match self {
-            MessyJson::Number(_) => Ok(MessyJsonValue::Number(v)),
+        match self.inner() {
+            MessyJson::Number(_) => Ok(MessyJsonValueContainer::new(MessyJsonValue::Number(v))),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Other("number"),
                 &"Number",
@@ -137,8 +142,8 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         A: serde::de::Error,
     {
-        match self {
-            MessyJson::Null => Ok(MessyJsonValue::Null),
+        match self.inner() {
+            MessyJson::Null => Ok(MessyJsonValueContainer::new(MessyJsonValue::Null)),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Other("null"),
                 &"Null",
@@ -151,7 +156,7 @@ impl<'de> Visitor<'de> for &'de MessyJson {
     where
         D: Deserializer<'de>,
     {
-        match self {
+        match self.inner() {
             MessyJson::Bool(_) => deserializer.deserialize_bool(self),
             MessyJson::String(_) => deserializer.deserialize_str(self),
             MessyJson::Number(opt) => match opt.type_() {
