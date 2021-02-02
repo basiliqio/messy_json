@@ -1,3 +1,4 @@
+#![warn(clippy::all)]
 use serde::de::{DeserializeSeed, Deserializer, MapAccess, SeqAccess, Visitor};
 use std::borrow::Cow;
 use std::collections::BTreeMap;

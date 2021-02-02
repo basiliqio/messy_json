@@ -65,9 +65,11 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
                     let nested_val = self.new_nested(&val_schema);
                     res.insert(key_str, seq.next_value_seed(nested_val)?.take());
                 }
-                self.compare_obj(obj_type, &res).map_or(Ok(()), |x| {
-                    Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
-                })?;
+                if obj_type.properties().len() != res.len() {
+                    self.compare_obj(obj_type, &res).map_or(Ok(()), |x| {
+                        Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
+                    })?;
+                }
                 Ok(MessyJsonValueContainer::new(MessyJsonValue::Obj(res)))
             }
             _ => Err(serde::de::Error::invalid_type(

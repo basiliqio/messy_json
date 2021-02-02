@@ -218,7 +218,7 @@ fn nested_optional() {
             (
                 "hello".to_string(),
                 MessyJson::Obj(Box::new(MessyJsonObject::new(
-                    vec![("world".to_string(), nested_string_opt.clone())]
+                    vec![("world".to_string(), nested_string_opt)]
                         .into_iter()
                         .collect(),
                     false,
@@ -252,7 +252,7 @@ fn nested_optional_parent_optional() {
             (
                 "hello".to_string(),
                 MessyJson::Obj(Box::new(MessyJsonObject::new(
-                    vec![("world".to_string(), nested_string_opt.clone())]
+                    vec![("world".to_string(), nested_string_opt)]
                         .into_iter()
                         .collect(),
                     true, // Optional parent

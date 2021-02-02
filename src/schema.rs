@@ -11,7 +11,7 @@ pub enum MessyJson {
 }
 
 impl MessyJson {
-    pub fn builder<'a>(&'a self) -> MessyJsonBuilder<'a> {
+    pub fn builder(&self) -> MessyJsonBuilder {
         MessyJsonBuilder::new(self)
     }
 
@@ -54,12 +54,11 @@ impl<'a> MessyJsonBuilder<'a> {
         res: &BTreeMap<Cow<'_, str>, MessyJsonValue>,
     ) -> Option<String> {
         let mut res_iter = res.keys().peekable();
-        let mut schema_iter = schema.properties().iter();
         let mut is_done = false;
 
-        'schema: while let Some((key, val)) = schema_iter.next() {
+        'schema: for (key, val) in schema.properties().iter() {
             if !is_done {
-                while let Some(val_key) = res_iter.peek() {
+                if let Some(val_key) = res_iter.peek() {
                     if val.optional() {
                         continue 'schema;
                     } else if key.as_str() != *val_key {
