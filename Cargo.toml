@@ -3,7 +3,10 @@ name = "messy_json"
 version = "0.1.0"
 authors = ["Francis Le Roy <francis.leroy@protonmail.ch>"]
 edition = "2018"
-
+keywords = ["serde", "json", "dynamic"]
+description = "JSON Parser for dynamically structured documents"
+repository = "https://gitlab.com/basiliq/messy_json"
+license-file = "LICENSE"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
