@@ -41,6 +41,7 @@ fn parse_messy_json(schema: &MessyJson, input: &str) {
 pub fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Simple object");
 
+    super::apply_criterion_group_settings(&mut group);
     group.bench_with_input(
         criterion::BenchmarkId::new("deser_serde_struct", "simple_obj"),
         &SIMPLE_OBJ,

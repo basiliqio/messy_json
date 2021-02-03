@@ -74,6 +74,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     let prepared_optional = gen_messy_json_schema_optional_obj();
 
     let mut group = c.benchmark_group("Partial object");
+    super::apply_criterion_group_settings(&mut group);
     group.bench_with_input(
         criterion::BenchmarkId::new("deser_serde_struct", "optional_obj"),
         &OPTIONAL_OBJ,

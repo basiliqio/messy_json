@@ -22,6 +22,9 @@
 	- [Introduction](#introduction)
 	- [Example](#example)
 	- [Performance](#performance)
+		- [Dummy object](#dummy-object)
+		- [Partial object](#partial-object)
+		- [Simple object](#simple-object)
 
 ## Introduction
 
@@ -67,4 +70,91 @@ The following graphs were run on a machine with the following specs:
 - Kernel	: `5.10.10-arch1-1`
 - Rust		: `rustc 1.49.0 (e1884a8e3 2020-12-29)`
 
+In the following benchmarks, the `messy_json` crate is compared with deserializer from the [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html) and macro-generated deserializer using `serde`'s `derive`.
 
+### Dummy object
+
+The following benchmark consists of deserializing the JSON Document
+
+```json
+{
+	"hello":
+	{
+		"hola": "world"
+	}
+}
+```
+
+the accepted schema should looks like the following:
+
+```rust
+struct DummyObjNested<'a> {
+    hola: Cow<'a, str>,
+}
+
+struct DummyObj<'a> {
+    hello: DummyObjNested<'a>,
+}
+```
+
+The results show that `messy_json` is slower than macro-generated deserializer but faster than using
+[`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html).
+
+![Dummy structure violin](./benches/dummy_violin.svg)
+
+### Partial object
+
+The following benchmark consists of deserializing the JSON Document
+
+```json
+{
+	"hello":
+	{
+		"hola": "world"
+	}
+}
+```
+
+the accepted schema should looks like the following:
+
+```rust
+#[derive(Serialize, Deserialize)]
+struct PartialObjNested<'a> {
+    hola: Cow<'a, str>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct PartialObj<'a> {
+    hello: PartialObjNested<'a>,
+    coucou: Option<Cow<'a, str>>,
+    coucou1: Option<Cow<'a, str>>,
+    coucou2: Option<Cow<'a, str>>,
+}
+```
+
+The results show that `messy_json` is slower than macro-generated deserializer and on par with [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html). When using optional values, this crate has to check it has met all of the mandatory values for each object, hence the performance regression. In the future, when the `alloc_api` of the Rust language is merged into `stable`, optimizations could be put in place reducing the time necessary to check for missing fields.
+
+![Partial structure violin](./benches/partial_violin.svg)
+
+### Simple object
+
+The following benchmark consists of deserializing the JSON Document
+
+```json
+{
+	"hello": "world"
+}
+```
+
+the accepted schema should looks like the following:
+
+```rust
+#[derive(Serialize, Deserialize)]
+struct SimpleObj<'a> {
+    hello: Cow<'a, str>,
+}
+```
+
+The results show that `messy_json` is slower than macro-generated deserializer but is still faster than [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html). 
+
+![Partial structure violin](./benches/simple_violin.svg)

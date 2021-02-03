@@ -57,6 +57,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     let prepared_dummy = gen_messy_json_schema_dummy_obj();
 
     let mut group = c.benchmark_group("Dummy object");
+    super::apply_criterion_group_settings(&mut group);
     group.bench_with_input(
         criterion::BenchmarkId::new("deser_serde_struct", "dummy_obj"),
         &DUMMY_OBJ,
