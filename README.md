@@ -67,7 +67,7 @@ The following graphs were run on a machine with the following specs:
 
 - CPU		: Intel i9-9900K @ 5Ghz
 - RAM		: 32 Gb RAM @ 2133 Mhz
-- Kernel	: `5.10.10-arch1-1`
+- Kernel	: `5.10.11-arch1-1`
 - Rust		: `rustc 1.49.0 (e1884a8e3 2020-12-29)`
 
 In the following benchmarks, the `messy_json` crate is compared with deserializer from the [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html) and macro-generated deserializer using `serde`'s `derive`.
@@ -100,7 +100,9 @@ struct DummyObj<'a> {
 The results show that `messy_json` is slower than macro-generated deserializer but faster than using
 [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html).
 
-![Dummy structure violin](./benches/dummy_violin.svg)
+<a href="https://gitlab.com/basiliq/messy_json/-/blob/master/benches/dummy_violin.svg" alt="Dummy structure violin">
+  <img src="./benches/dummy_violin.svg">
+</a>
 
 ### Partial object
 
@@ -134,7 +136,9 @@ struct PartialObj<'a> {
 
 The results show that `messy_json` is slower than macro-generated deserializer and on par with [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html). When using optional values, this crate has to check it has met all of the mandatory values for each object, hence the performance regression. In the future, when the `alloc_api` of the Rust language is merged into `stable`, optimizations could be put in place reducing the time necessary to check for missing fields.
 
-![Partial structure violin](./benches/partial_violin.svg)
+<a href="https://gitlab.com/basiliq/messy_json/-/blob/master/benches/partial_violin.svg" alt="Partial structure violin">
+  <img src="./benches/partial_violin.svg">
+</a>
 
 ### Simple object
 
@@ -157,4 +161,6 @@ struct SimpleObj<'a> {
 
 The results show that `messy_json` is slower than macro-generated deserializer but is still faster than [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html). 
 
-![Partial structure violin](./benches/simple_violin.svg)
+<a href="https://gitlab.com/basiliq/messy_json/-/blob/master/benches/simple_violin.svg" alt="Simple structure violin">
+  <img src="./benches/simple_violin.svg">
+</a>
