@@ -1,4 +1,6 @@
 ## [Unreleased]
+### Added
+- Comparaison function between `MessyJsonValue` and `serde_json::Value`
 
 ## [0.1.0] - 2021-02-03
 ### Added
