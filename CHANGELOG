@@ -1,6 +1,8 @@
 ## [Unreleased]
 ### Added
 - Comparaison function between `MessyJsonValue` and `serde_json::Value`
+- `MessyJsonObjectValue` and `MessyJsonArrayValue` to facilitate describing a
+document that MUST be either an object/an array
 
 ## [0.1.0] - 2021-02-03
 ### Added

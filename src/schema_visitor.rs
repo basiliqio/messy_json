@@ -19,7 +19,9 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
                 while let Some(elem) = seq.next_element_seed(self.new_nested(arr_type.items()))? {
                     res.push(elem.take())
                 }
-                Ok(MessyJsonValueContainer::new(MessyJsonValue::Array(res)))
+                Ok(MessyJsonValueContainer::new(MessyJsonValue::Array(
+                    MessyJsonArrayValue::from(res),
+                )))
             }
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Seq,
@@ -70,7 +72,9 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
                         Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
                     })?;
                 }
-                Ok(MessyJsonValueContainer::new(MessyJsonValue::Obj(res)))
+                Ok(MessyJsonValueContainer::new(MessyJsonValue::Obj(
+                    MessyJsonObjectValue::from(res),
+                )))
             }
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Map,

@@ -123,4 +123,6 @@ pub use number::{MessyJsonNumberType, MessyJsonNumeric};
 pub use object::MessyJsonObject;
 pub use scalar::MessyJsonScalar;
 pub use schema::{MessyJson, MessyJsonBuilder};
-pub use value::{MessyJsonValue, MessyJsonValueContainer};
+pub use value::{
+    MessyJsonArrayValue, MessyJsonObjectValue, MessyJsonValue, MessyJsonValueContainer,
+};
