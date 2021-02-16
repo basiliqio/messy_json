@@ -15,6 +15,12 @@ impl<'a> Deref for MessyJsonObjectValue<'a> {
     }
 }
 
+impl<'a> MessyJsonObjectValue<'a> {
+    pub fn take(self) -> BTreeMap<Cow<'a, str>, MessyJsonValue<'a>> {
+        self.0
+    }
+}
+
 impl<'a> From<BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>> for MessyJsonObjectValue<'a> {
     fn from(obj: BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>) -> Self {
         MessyJsonObjectValue(obj)
@@ -24,6 +30,12 @@ impl<'a> From<BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>> for MessyJsonObjectVal
 impl<'a> From<Vec<MessyJsonValue<'a>>> for MessyJsonArrayValue<'a> {
     fn from(arr: Vec<MessyJsonValue<'a>>) -> Self {
         MessyJsonArrayValue(arr)
+    }
+}
+
+impl<'a> MessyJsonArrayValue<'a> {
+    pub fn take(self) -> Vec<MessyJsonValue<'a>> {
+        self.0
     }
 }
 
