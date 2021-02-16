@@ -4,6 +4,11 @@
 - `MessyJsonObjectValue` and `MessyJsonArrayValue` to facilitate describing a
 document that MUST be either an object/an array
 
+### Removed
+- `MessyJson::Null` is no longer available
+
+### Changed
+- `MessyJsonValue::Null` contains a reference to the deserializing schema
 ## [0.1.0] - 2021-02-03
 ### Added
 - 🎉 first release!

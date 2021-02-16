@@ -12,7 +12,6 @@ pub enum MessyJson {
     Number(MessyJsonNumeric),
     Obj(Box<MessyJsonObject>),
     String(MessyJsonScalar),
-    Null,
 }
 
 impl MessyJson {
@@ -29,7 +28,6 @@ impl MessyJson {
             MessyJson::Number(x) => x.optional(),
             MessyJson::Obj(x) => x.optional(),
             MessyJson::String(x) => x.optional(),
-            MessyJson::Null => true,
         }
     }
 }
@@ -119,7 +117,6 @@ impl<'de> DeserializeSeed<'de> for MessyJsonBuilder<'de> {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_seq(self),
             },
-            MessyJson::Null => deserializer.deserialize_option(self),
         }
     }
 }

@@ -148,13 +148,9 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
     where
         A: serde::de::Error,
     {
-        match self.inner() {
-            MessyJson::Null => Ok(MessyJsonValueContainer::new(MessyJsonValue::Null)),
-            _ => Err(serde::de::Error::invalid_type(
-                serde::de::Unexpected::Other("null"),
-                &"Null",
-            )),
-        }
+        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null(
+            self.inner(),
+        )))
     }
 
     #[inline]
@@ -171,7 +167,6 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
             },
             MessyJson::Obj(_) => deserializer.deserialize_map(self),
             MessyJson::Array(_) => deserializer.deserialize_seq(self),
-            MessyJson::Null => deserializer.deserialize_option(self),
         }
     }
 }
