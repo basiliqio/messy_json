@@ -49,18 +49,18 @@ fn run_test(schema: MessyJson, value: &str, expected: MessyJsonValue) {
 #[test]
 fn simple() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let nested_schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let nested_schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("the".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    ));
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_schema)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": {
@@ -79,18 +79,18 @@ fn simple() {
 #[test]
 fn wrong_key() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let nested_schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let nested_schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("the".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    ));
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_schema)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": {
@@ -109,18 +109,18 @@ fn wrong_key() {
 #[test]
 fn wrong_value_type() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let nested_schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let nested_schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("the".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    ));
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_schema)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": {

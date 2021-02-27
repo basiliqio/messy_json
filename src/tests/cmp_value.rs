@@ -84,10 +84,7 @@ fn gen_parser() -> MessyJson {
                     false,
                 ))),
             ),
-            (
-                "obj".to_string(),
-                MessyJson::Obj(Box::new(schema_nested2_obj)),
-            ),
+            ("obj".to_string(), MessyJson::Obj(schema_nested2_obj)),
         ]
         .into_iter()
         .collect(),
@@ -114,16 +111,13 @@ fn gen_parser() -> MessyJson {
                     false,
                 ))),
             ),
-            (
-                "obj".to_string(),
-                MessyJson::Obj(Box::new(schema_nested1_obj)),
-            ),
+            ("obj".to_string(), MessyJson::Obj(schema_nested1_obj)),
         ]
         .into_iter()
         .collect(),
         false,
     );
-    let schema_root: MessyJson = MessyJson::Obj(Box::new(schema_root_obj));
+    let schema_root: MessyJson = MessyJson::Obj(schema_root_obj);
 
     schema_root
 }

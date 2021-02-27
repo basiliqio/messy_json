@@ -34,12 +34,12 @@ fn run_flat_test(schema: MessyJson, value: &str, expected: MessyJsonValue) {
 #[test]
 fn string() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": "world"
@@ -56,12 +56,12 @@ fn string() {
 #[test]
 fn bool() {
     let nested_string = MessyJson::Bool(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": true
@@ -73,12 +73,12 @@ fn bool() {
 #[test]
 fn number_tiny() {
     let nested_string = MessyJson::Number(MessyJsonNumeric::new(MessyJsonNumberType::U64, false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": 15
@@ -90,12 +90,12 @@ fn number_tiny() {
 #[test]
 fn number_huge() {
     let nested_string = MessyJson::Number(MessyJsonNumeric::new(MessyJsonNumberType::U128, false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": 340282366920938463463374607431768211454

@@ -29,10 +29,10 @@ fn parse_serde_value_dummy_obj(input: &str) -> Value {
 }
 
 fn gen_messy_json_schema_dummy_obj() -> MessyJson {
-    MessyJson::Obj(Box::new(MessyJsonObject::new(
+    MessyJson::Obj(MessyJsonObject::new(
         vec![(
             "hello".to_string(),
-            MessyJson::Obj(Box::new(MessyJsonObject::new(
+            MessyJson::Obj(MessyJsonObject::new(
                 vec![(
                     "hola".to_string(),
                     MessyJson::String(MessyJsonScalar::new(false)),
@@ -40,12 +40,12 @@ fn gen_messy_json_schema_dummy_obj() -> MessyJson {
                 .into_iter()
                 .collect(),
                 false,
-            ))),
+            )),
         )]
         .into_iter()
         .collect(),
         false,
-    )))
+    ))
 }
 
 fn parse_messy_json_dummy_obj(schema: &MessyJson) {

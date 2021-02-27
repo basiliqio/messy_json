@@ -10,7 +10,7 @@ pub enum MessyJson {
     Array(Box<MessyJsonArray>),
     Bool(MessyJsonScalar),
     Number(MessyJsonNumeric),
-    Obj(Box<MessyJsonObject>),
+    Obj(MessyJsonObject),
     String(MessyJsonScalar),
 }
 
@@ -29,6 +29,24 @@ impl MessyJson {
             MessyJson::Obj(x) => x.optional(),
             MessyJson::String(x) => x.optional(),
         }
+    }
+}
+
+impl From<MessyJsonArray> for MessyJson {
+    fn from(x: MessyJsonArray) -> Self {
+        MessyJson::Array(Box::new(x))
+    }
+}
+
+impl From<MessyJsonNumeric> for MessyJson {
+    fn from(x: MessyJsonNumeric) -> Self {
+        MessyJson::Number(x)
+    }
+}
+
+impl From<MessyJsonObject> for MessyJson {
+    fn from(x: MessyJsonObject) -> Self {
+        MessyJson::Obj(x)
     }
 }
 

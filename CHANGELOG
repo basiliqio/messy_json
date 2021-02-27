@@ -3,6 +3,7 @@
 - Comparaison function between `MessyJsonValue` and `serde_json::Value`
 - `MessyJsonObjectValue` and `MessyJsonArrayValue` to facilitate describing a
 document that MUST be either an object/an array
+- `MessyJsonObject` can be `into` `MessyJson` without further allocation
 
 ### Removed
 - `MessyJson::Null` is no longer available

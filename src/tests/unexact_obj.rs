@@ -3,12 +3,12 @@ use super::*;
 #[test]
 fn unknown() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": "world",
@@ -24,12 +24,12 @@ fn unknown() {
 #[test]
 fn missing() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 	}
@@ -44,7 +44,7 @@ fn missing() {
 fn complete_with_optional() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
     let nested_string_opt = MessyJson::String(MessyJsonScalar::new(true));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             ("hello".to_string(), nested_string.clone()),
             ("whoami".to_string(), nested_string_opt),
@@ -53,7 +53,7 @@ fn complete_with_optional() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": "world",
@@ -70,7 +70,7 @@ fn complete_with_optional() {
 fn incomplete_with_optional() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
     let nested_string_opt = MessyJson::String(MessyJsonScalar::new(true));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             ("hello".to_string(), nested_string.clone()),
             ("whoami".to_string(), nested_string_opt),
@@ -79,7 +79,7 @@ fn incomplete_with_optional() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": "world",
@@ -95,7 +95,7 @@ fn incomplete_with_optional() {
 fn incomplete_with_optional2() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
     let nested_string_opt = MessyJson::String(MessyJsonScalar::new(true));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             ("hello".to_string(), nested_string.clone()),
             ("whoami".to_string(), nested_string),
@@ -104,7 +104,7 @@ fn incomplete_with_optional2() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": "world",
@@ -119,7 +119,7 @@ fn incomplete_with_optional2() {
 #[test]
 fn all_optional() {
     let nested_string_opt = MessyJson::String(MessyJsonScalar::new(true));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             ("hello".to_string(), nested_string_opt.clone()),
             ("whoami".to_string(), nested_string_opt.clone()),
@@ -128,7 +128,7 @@ fn all_optional() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 	}
@@ -141,16 +141,16 @@ fn all_optional() {
 #[test]
 fn nested_missing() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             (
                 "hello".to_string(),
-                MessyJson::Obj(Box::new(MessyJsonObject::new(
+                MessyJson::Obj(MessyJsonObject::new(
                     vec![("world".to_string(), nested_string.clone())]
                         .into_iter()
                         .collect(),
                     false,
-                ))),
+                )),
             ),
             ("whoami".to_string(), nested_string.clone()),
             ("hehe".to_string(), nested_string),
@@ -158,7 +158,7 @@ fn nested_missing() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": {},
@@ -175,16 +175,16 @@ fn nested_missing() {
 #[test]
 fn nested_unknown() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             (
                 "hello".to_string(),
-                MessyJson::Obj(Box::new(MessyJsonObject::new(
+                MessyJson::Obj(MessyJsonObject::new(
                     vec![("world".to_string(), nested_string.clone())]
                         .into_iter()
                         .collect(),
                     false,
-                ))),
+                )),
             ),
             ("whoami".to_string(), nested_string.clone()),
             ("hehe".to_string(), nested_string),
@@ -192,7 +192,7 @@ fn nested_unknown() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": {
@@ -213,16 +213,16 @@ fn nested_unknown() {
 fn nested_optional() {
     let nested_string_opt = MessyJson::String(MessyJsonScalar::new(true));
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             (
                 "hello".to_string(),
-                MessyJson::Obj(Box::new(MessyJsonObject::new(
+                MessyJson::Obj(MessyJsonObject::new(
                     vec![("world".to_string(), nested_string_opt)]
                         .into_iter()
                         .collect(),
                     false,
-                ))),
+                )),
             ),
             ("whoami".to_string(), nested_string.clone()),
             ("hehe".to_string(), nested_string),
@@ -230,7 +230,7 @@ fn nested_optional() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": {},
@@ -247,16 +247,16 @@ fn nested_optional() {
 fn nested_optional_parent_optional() {
     let nested_string_opt = MessyJson::String(MessyJsonScalar::new(true));
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![
             (
                 "hello".to_string(),
-                MessyJson::Obj(Box::new(MessyJsonObject::new(
+                MessyJson::Obj(MessyJsonObject::new(
                     vec![("world".to_string(), nested_string_opt)]
                         .into_iter()
                         .collect(),
                     true, // Optional parent
-                ))),
+                )),
             ),
             ("whoami".to_string(), nested_string.clone()),
             ("hehe".to_string(), nested_string),
@@ -264,7 +264,7 @@ fn nested_optional_parent_optional() {
         .into_iter()
         .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"whoami": "hello",

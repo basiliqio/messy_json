@@ -46,12 +46,12 @@ fn simple() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
     let nested_schema: MessyJson =
         MessyJson::Array(Box::new(MessyJsonArray::new(nested_string, false)));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_schema)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": [
@@ -69,12 +69,12 @@ fn wrong_value() {
     let nested_string = MessyJson::String(MessyJsonScalar::new(false));
     let nested_schema: MessyJson =
         MessyJson::Array(Box::new(MessyJsonArray::new(nested_string, false)));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
         vec![("hello".to_string(), nested_schema)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ));
     let value = r#"
 	{
 		"hello": [

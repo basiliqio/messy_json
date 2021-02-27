@@ -31,10 +31,10 @@
 //! ```rust
 //! use messy_json::*;
 //!
-//! let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+//! let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
 //! vec![(
 //!     "hello".to_string(),
-//!     MessyJson::Obj(Box::new(MessyJsonObject::new(
+//!     MessyJson::Obj(MessyJsonObject::new(
 //!         vec![(
 //!             "world".to_string(),
 //!             MessyJson::Number(MessyJsonNumeric::new(MessyJsonNumberType::U64, false)),
@@ -42,7 +42,7 @@
 //!         .into_iter()
 //!         .collect(),
 //!         false,
-//!     ))),
+//!     )),
 //! ),
 //! (
 //!     "an_optional_one".to_string(),
@@ -51,7 +51,7 @@
 //! .into_iter()
 //! .collect(),
 //! false,
-//! )));
+//! ));
 //! ```
 //!
 //! Granted, this is a bit _wordy_ to define such a simple structure but keep in
@@ -75,10 +75,10 @@
 //!     }
 //! "#;
 //!
-//! # let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
+//! # let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
 //! # vec![(
 //! #     "hello".to_string(),
-//! #     MessyJson::Obj(Box::new(MessyJsonObject::new(
+//! #     MessyJson::Obj(MessyJsonObject::new(
 //! #         vec![(
 //! #             "world".to_string(),
 //! #             MessyJson::Number(MessyJsonNumeric::new(MessyJsonNumberType::U64, false)),
@@ -86,7 +86,7 @@
 //! #         .into_iter()
 //! #         .collect(),
 //! #         false,
-//! #     ))),
+//! #     )),
 //! # ),
 //! # (
 //! #     "an_optional_one".to_string(),
@@ -95,7 +95,7 @@
 //! # .into_iter()
 //! # .collect(),
 //! # false,
-//! # )));
+//! # ));
 //! let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
 //! let val: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
 //!

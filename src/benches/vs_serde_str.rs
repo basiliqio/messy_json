@@ -22,7 +22,7 @@ fn parse_serde_value(input: &str) -> Value {
 }
 
 fn gen_messy_json_schema() -> MessyJson {
-    MessyJson::Obj(Box::new(MessyJsonObject::new(
+    MessyJson::Obj(MessyJsonObject::new(
         vec![(
             "hello".to_string(),
             MessyJson::String(MessyJsonScalar::new(false)),
@@ -30,7 +30,7 @@ fn gen_messy_json_schema() -> MessyJson {
         .into_iter()
         .collect(),
         false,
-    )))
+    ))
 }
 
 fn parse_messy_json(schema: &MessyJson, input: &str) {
