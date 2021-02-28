@@ -31,6 +31,12 @@ impl<'a> MessyJsonObject<'a> {
         &self.properties
     }
 
+    /// Get a reference to the [MessyJsonObject](MessyJsonObject)'s properties
+    #[inline]
+    pub fn has_field(&self, key: &str) -> bool {
+        self.properties.contains_key(key)
+    }
+
     /// Check if the object is optional
     #[inline]
     pub fn optional(&self) -> bool {
