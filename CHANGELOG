@@ -4,6 +4,11 @@
 - `MessyJsonObjectValue` and `MessyJsonArrayValue` to facilitate describing a
 document that MUST be either an object/an array
 - `MessyJsonObject` can be `into` `MessyJson` without further allocation
+- `MessyJsonObject` has a its own builder object
+- New trait added to factorize the common points between `MessyJsonObjectBuilder` and `MessyJsonBuilder`
+
+### Changed
+- `MessyJson` and `MessyJsonObject` now take a lifetime argument
 
 ### Removed
 - `MessyJson::Null` is no longer available

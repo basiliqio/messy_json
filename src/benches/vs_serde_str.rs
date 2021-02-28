@@ -21,21 +21,21 @@ fn parse_serde_value(input: &str) -> Value {
     serde_json::from_str(input).unwrap()
 }
 
-fn gen_messy_json_schema() -> MessyJson {
-    MessyJson::Obj(MessyJsonObject::new(
+fn gen_messy_json_schema<'a>() -> MessyJson<'a> {
+    MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![(
             "hello".to_string(),
-            MessyJson::String(MessyJsonScalar::new(false)),
+            MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
         )]
         .into_iter()
         .collect(),
         false,
-    ))
+    )))
 }
 
-fn parse_messy_json(schema: &MessyJson, input: &str) {
+fn parse_messy_json<'a>(schema: &'a MessyJson<'a>, input: &'a str) {
     let mut deserializer = serde_json::Deserializer::from_str(input);
-    let _parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
+    let _parsed = schema.builder().deserialize(&mut deserializer).unwrap();
 }
 
 pub fn criterion_benchmark(c: &mut Criterion) {

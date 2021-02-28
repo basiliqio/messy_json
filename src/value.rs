@@ -65,7 +65,7 @@ pub enum MessyJsonValue<'a> {
     Number(u128),
     Obj(MessyJsonObjectValue<'a>),
     String(Cow<'a, str>),
-    Null(&'a MessyJson),
+    Null,
 }
 
 impl<'a> PartialEq<Value> for MessyJsonObjectValue<'a> {
@@ -111,7 +111,7 @@ impl<'a> PartialEq<Value> for MessyJsonValue<'a> {
             }
             (MessyJsonValue::Obj(mj_obj), Value::Object(_)) => mj_obj.eq(other),
             (MessyJsonValue::String(mj_str), Value::String(v_str)) => mj_str == v_str,
-            (MessyJsonValue::Null(_), Value::Null) => true,
+            (MessyJsonValue::Null, Value::Null) => true,
             _ => false,
         }
     }

@@ -1,6 +1,6 @@
 use super::*;
 
-fn run_test(schema: MessyJson, value: &str) {
+fn run_test<'a>(schema: &'a MessyJson<'a>, value: &'a str) {
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
     assert_eq!(
@@ -43,15 +43,15 @@ fn run_test(schema: MessyJson, value: &str) {
 
 #[test]
 fn simple() {
-    let nested_string = MessyJson::String(MessyJsonScalar::new(false));
+    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let nested_schema: MessyJson =
         MessyJson::Array(Box::new(MessyJsonArray::new(nested_string, false)));
-    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![("hello".to_string(), nested_schema)]
             .into_iter()
             .collect(),
         false,
-    ));
+    )));
     let value = r#"
 	{
 		"hello": [
@@ -61,20 +61,20 @@ fn simple() {
 	}
 	"#;
 
-    run_test(schema, value);
+    run_test(&schema, value);
 }
 
 #[test]
 fn wrong_value() {
-    let nested_string = MessyJson::String(MessyJsonScalar::new(false));
+    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let nested_schema: MessyJson =
         MessyJson::Array(Box::new(MessyJsonArray::new(nested_string, false)));
-    let schema: MessyJson = MessyJson::Obj(MessyJsonObject::new(
+    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![("hello".to_string(), nested_schema)]
             .into_iter()
             .collect(),
         false,
-    ));
+    )));
     let value = r#"
 	{
 		"hello": [

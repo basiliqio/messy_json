@@ -30,27 +30,27 @@ fn parse_serde_struct() -> DummySerdeStruct<'static> {
     serde_json::from_str(DUMMY_OBJ).unwrap()
 }
 
-fn gen_messy_json_schema() -> MessyJson {
-    MessyJson::Obj(MessyJsonObject::new(
+fn gen_messy_json_schema<'a>() -> MessyJson<'a> {
+    MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![(
             "hello".to_string(),
-            MessyJson::Obj(MessyJsonObject::new(
+            MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
                 vec![(
                     "hola".to_string(),
-                    MessyJson::String(MessyJsonScalar::new(false)),
+                    MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
                 )]
                 .into_iter()
                 .collect(),
                 false,
-            )),
+            ))),
         )]
         .into_iter()
         .collect(),
         false,
-    ))
+    )))
 }
 
-fn parse_messy_json(schema: &MessyJson) -> MessyJsonValueContainer {
+fn parse_messy_json<'a>(schema: &'a MessyJson<'a>) -> MessyJsonValueContainer<'a> {
     let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
     schema.builder().deserialize(&mut deserializer).unwrap()
 }

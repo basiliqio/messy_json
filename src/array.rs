@@ -11,26 +11,26 @@ use super::*;
 ///
 /// This objects cannot describe multiple types of childrens
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct MessyJsonArray {
+pub struct MessyJsonArray<'a> {
     optional: bool,
-    items: MessyJson,
+    items: MessyJson<'a>,
 }
 
-impl MessyJsonArray {
+impl<'a> MessyJsonArray<'a> {
     /// Create a new [MessyJsonArray](MessyJsonArray)
-    pub fn new(items: MessyJson, optional: bool) -> Self {
+    pub fn new(items: MessyJson<'a>, optional: bool) -> Self {
         MessyJsonArray { items, optional }
     }
 
     /// Get the underlying items of a [MessyJsonArray](MessyJsonArray)
     #[inline]
-    pub fn items(&self) -> &MessyJson {
+    pub fn items(&'a self) -> &'a MessyJson {
         &self.items
     }
 
     /// Check if the array is optional
     #[inline]
-    pub fn optional(&self) -> bool {
+    pub fn optional(&'a self) -> bool {
         self.optional
     }
 }

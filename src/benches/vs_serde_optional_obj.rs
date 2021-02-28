@@ -31,41 +31,41 @@ fn parse_serde_value_optional_obj(input: &str) -> Value {
     serde_json::from_str(input).unwrap()
 }
 
-fn gen_messy_json_schema_optional_obj() -> MessyJson {
-    MessyJson::Obj(MessyJsonObject::new(
+fn gen_messy_json_schema_optional_obj<'a>() -> MessyJson<'a> {
+    MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
             (
                 "hello".to_string(),
-                MessyJson::Obj(MessyJsonObject::new(
+                MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
                     vec![(
                         "hola".to_string(),
-                        MessyJson::String(MessyJsonScalar::new(false)),
+                        MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
                     )]
                     .into_iter()
                     .collect(),
                     false,
-                )),
+                ))),
             ),
             (
                 "coucou".to_string(),
-                MessyJson::String(MessyJsonScalar::new(true)),
+                MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
             ),
             (
                 "coucou1".to_string(),
-                MessyJson::String(MessyJsonScalar::new(true)),
+                MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
             ),
             (
                 "coucou2".to_string(),
-                MessyJson::String(MessyJsonScalar::new(true)),
+                MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
             ),
         ]
         .into_iter()
         .collect(),
         false,
-    ))
+    )))
 }
 
-fn parse_messy_json_optional_obj(schema: &MessyJson) {
+fn parse_messy_json_optional_obj<'a>(schema: &'a MessyJson<'a>) {
     let mut deserializer = serde_json::Deserializer::from_str(OPTIONAL_OBJ);
     let _parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
 }
@@ -88,7 +88,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     group.bench_with_input(
         criterion::BenchmarkId::new("deser_messy_json", "optional_obj"),
         &prepared_optional,
-        |b, i| b.iter(|| parse_messy_json_optional_obj(i)),
+        |b, _i| b.iter(|| parse_messy_json_optional_obj(&prepared_optional)),
     );
     group.finish()
 }

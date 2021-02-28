@@ -6,22 +6,22 @@ use super::*;
 ///
 /// At deserialization, this enum will ensure that the JSON Value corresponds to this schema.
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub enum MessyJson {
-    Array(Box<MessyJsonArray>),
-    Bool(MessyJsonScalar),
-    Number(MessyJsonNumeric),
-    Obj(MessyJsonObject),
-    String(MessyJsonScalar),
+pub enum MessyJson<'a> {
+    Array(Box<MessyJsonArray<'a>>),
+    Bool(Cow<'a, MessyJsonScalar>),
+    Number(Cow<'a, MessyJsonNumeric>),
+    Obj(Cow<'a, MessyJsonObject<'a>>),
+    String(Cow<'a, MessyJsonScalar>),
 }
 
-impl MessyJson {
+impl<'a> MessyJson<'a> {
     /// Return a builder, to deserialize an object with
-    pub fn builder(&self) -> MessyJsonBuilder {
-        MessyJsonBuilder::new(self)
+    pub fn builder(&'a self) -> MessyJsonBuilder<'a> {
+        MessyJsonBuilder::new(&self)
     }
 
     /// Check if the inner value of this enum is optional
-    pub fn optional(&self) -> bool {
+    pub fn optional(&'a self) -> bool {
         match self {
             MessyJson::Array(x) => x.optional(),
             MessyJson::Bool(x) => x.optional(),
@@ -32,21 +32,33 @@ impl MessyJson {
     }
 }
 
-impl From<MessyJsonArray> for MessyJson {
-    fn from(x: MessyJsonArray) -> Self {
+impl<'a> From<MessyJsonArray<'a>> for MessyJson<'a> {
+    fn from(x: MessyJsonArray<'a>) -> Self {
         MessyJson::Array(Box::new(x))
     }
 }
 
-impl From<MessyJsonNumeric> for MessyJson {
+impl<'a> From<MessyJsonNumeric> for MessyJson<'a> {
     fn from(x: MessyJsonNumeric) -> Self {
-        MessyJson::Number(x)
+        MessyJson::Number(Cow::Owned(x))
     }
 }
 
-impl From<MessyJsonObject> for MessyJson {
-    fn from(x: MessyJsonObject) -> Self {
-        MessyJson::Obj(x)
+impl<'a> From<MessyJsonObject<'a>> for MessyJson<'a> {
+    fn from(x: MessyJsonObject<'a>) -> Self {
+        MessyJson::Obj(Cow::Owned(x))
+    }
+}
+
+impl<'a> From<&'a MessyJsonObject<'a>> for MessyJson<'a> {
+    fn from(x: &'a MessyJsonObject<'a>) -> Self {
+        MessyJson::Obj(Cow::Borrowed(x))
+    }
+}
+
+impl<'a> From<&'a MessyJsonNumeric> for MessyJson<'a> {
+    fn from(x: &'a MessyJsonNumeric) -> Self {
+        MessyJson::Number(Cow::Borrowed(x))
     }
 }
 
@@ -56,34 +68,32 @@ impl From<MessyJsonObject> for MessyJson {
 /// deserialization trait.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonBuilder<'a> {
-    schema: &'a MessyJson,
+    schema: &'a MessyJson<'a>,
 }
 
-impl<'a> MessyJsonBuilder<'a> {
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct MessyJsonObjectBuilder<'a> {
+    schema: &'a MessyJsonObject<'a>,
+}
+
+pub trait MessyJsonObjectTrait<'a> {
+    type Input;
+
     /// Create a new builder from a [MessyJson](MessyJson)
-    #[inline]
-    fn new(schema: &'a MessyJson) -> Self {
-        MessyJsonBuilder { schema }
-    }
+    fn new(schema: &'a Self::Input) -> Self;
 
     /// Get the inner [MessyJson](MessyJson)
-    #[inline]
-    pub fn inner(&self) -> &'a MessyJson {
-        &self.schema
-    }
+    fn inner(&self) -> &'a Self::Input;
 
     /// Create a new nested schema providing the nested schema and self
-    #[inline]
-    pub(crate) fn new_nested(&self, schema: &'a MessyJson) -> Self {
-        MessyJsonBuilder { schema }
-    }
+    fn new_nested(&self, schema: &'a MessyJson<'a>) -> MessyJsonBuilder<'a>;
 
     /// Compare that a deserialized object have all the required fields are available.
     ///
     /// Return a missing key if any, None otherwise
-    pub(crate) fn compare_obj(
-        schema: &MessyJsonObject,
-        res: &BTreeMap<Cow<'_, str>, MessyJsonValue>,
+    fn compare_obj(
+        schema: &'a MessyJsonObject<'a>,
+        res: &BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>,
     ) -> Option<String> {
         let el = itertools::merge_join_by(schema.properties(), res.keys(), |(key1, _), key2| {
             Ord::cmp(key1.as_str(), key2)
@@ -101,6 +111,44 @@ impl<'a> MessyJsonBuilder<'a> {
             }
             .to_string()
         })
+    }
+}
+
+impl<'a> MessyJsonObjectTrait<'a> for MessyJsonBuilder<'a> {
+    type Input = MessyJson<'a>;
+
+    #[inline]
+    fn new(schema: &'a Self::Input) -> Self {
+        MessyJsonBuilder { schema }
+    }
+
+    #[inline]
+    fn inner(&self) -> &'a Self::Input {
+        self.schema
+    }
+
+    #[inline]
+    fn new_nested(&self, schema: &'a MessyJson<'a>) -> MessyJsonBuilder<'a> {
+        MessyJsonBuilder { schema }
+    }
+}
+
+impl<'a> MessyJsonObjectTrait<'a> for MessyJsonObjectBuilder<'a> {
+    type Input = MessyJsonObject<'a>;
+
+    #[inline]
+    fn new(schema: &'a Self::Input) -> Self {
+        MessyJsonObjectBuilder { schema }
+    }
+
+    #[inline]
+    fn inner(&self) -> &'a Self::Input {
+        self.schema
+    }
+
+    #[inline]
+    fn new_nested(&self, schema: &'a MessyJson<'a>) -> MessyJsonBuilder<'a> {
+        MessyJsonBuilder::new(schema)
     }
 }
 
@@ -135,6 +183,20 @@ impl<'de> DeserializeSeed<'de> for MessyJsonBuilder<'de> {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_seq(self),
             },
+        }
+    }
+}
+
+impl<'de> DeserializeSeed<'de> for MessyJsonObjectBuilder<'de> {
+    type Value = MessyJsonValueContainer<'de>;
+    #[inline]
+    fn deserialize<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        match self.inner().optional() {
+            true => deserializer.deserialize_option(self),
+            false => deserializer.deserialize_map(self),
         }
     }
 }

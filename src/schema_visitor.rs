@@ -1,4 +1,53 @@
 use super::*;
+use crate::schema::MessyJsonObjectTrait;
+
+fn messy_json_visit_map<'de, A, V>(
+    mut seq: A,
+    visitor: &V,
+    obj: &'de MessyJsonObject<'de>,
+) -> Result<MessyJsonValueContainer<'de>, A::Error>
+where
+    A: MapAccess<'de>,
+    V: MessyJsonObjectTrait<'de>,
+{
+    let mut res: BTreeMap<Cow<'de, str>, MessyJsonValue> = BTreeMap::new();
+    while let Some(key_seed) = seq.next_key_seed(visitor.new_nested(&MessyJson::String(
+        Cow::Owned(MessyJsonScalar { optional: false }),
+    )))? {
+        let (val_schema, key_str) = match key_seed.take() {
+            MessyJsonValue::String(val) => (
+                obj.properties().get(&*val).ok_or_else(|| {
+                    serde::de::Error::custom(format!(
+                        "The key `{}` is unknown. The expected keys were `[ {} ]`",
+                        val,
+                        obj.properties()
+                            .keys()
+                            .map(|s| s.as_str())
+                            .collect::<Vec<&str>>()
+                            .join(", ")
+                    ))
+                })?,
+                val,
+            ),
+            _ => {
+                return Err(serde::de::Error::invalid_type(
+                    serde::de::Unexpected::Map,
+                    &"String",
+                ));
+            }
+        };
+        let nested_val = visitor.new_nested(&val_schema);
+        res.insert(key_str, seq.next_value_seed(nested_val)?.take());
+    }
+    if obj.properties().len() != res.len() {
+        MessyJsonBuilder::compare_obj(obj, &res).map_or(Ok(()), |x| {
+            Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
+        })?;
+    }
+    Ok(MessyJsonValueContainer::new(MessyJsonValue::Obj(
+        MessyJsonObjectValue::from(res),
+    )))
+}
 
 impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
     type Value = MessyJsonValueContainer<'de>;
@@ -31,51 +80,12 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
     }
 
     #[inline]
-    fn visit_map<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+    fn visit_map<A>(self, seq: A) -> Result<Self::Value, A::Error>
     where
         A: MapAccess<'de>,
     {
         match self.inner() {
-            MessyJson::Obj(obj_type) => {
-                let mut res: BTreeMap<Cow<'de, str>, MessyJsonValue> = BTreeMap::new();
-                while let Some(key_seed) = seq.next_key_seed(
-                    self.new_nested(&MessyJson::String(MessyJsonScalar { optional: false })),
-                )? {
-                    let (val_schema, key_str) = match key_seed.take() {
-                        MessyJsonValue::String(val) => (
-                            obj_type.properties().get(&*val).ok_or_else(|| {
-                                serde::de::Error::custom(format!(
-                                    "The key `{}` is unknown. The expected keys were `[ {} ]`",
-                                    val,
-                                    obj_type
-                                        .properties()
-                                        .keys()
-                                        .map(|s| s.as_str())
-                                        .collect::<Vec<&str>>()
-                                        .join(", ")
-                                ))
-                            })?,
-                            val,
-                        ),
-                        _ => {
-                            return Err(serde::de::Error::invalid_type(
-                                serde::de::Unexpected::Map,
-                                &"String",
-                            ));
-                        }
-                    };
-                    let nested_val = self.new_nested(&val_schema);
-                    res.insert(key_str, seq.next_value_seed(nested_val)?.take());
-                }
-                if obj_type.properties().len() != res.len() {
-                    Self::compare_obj(obj_type, &res).map_or(Ok(()), |x| {
-                        Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
-                    })?;
-                }
-                Ok(MessyJsonValueContainer::new(MessyJsonValue::Obj(
-                    MessyJsonObjectValue::from(res),
-                )))
-            }
+            MessyJson::Obj(obj_type) => messy_json_visit_map(seq, &self, obj_type),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Map,
                 &"Map",
@@ -148,9 +158,7 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
     where
         A: serde::de::Error,
     {
-        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null(
-            self.inner(),
-        )))
+        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null))
     }
 
     #[inline]
@@ -168,5 +176,37 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
             MessyJson::Obj(_) => deserializer.deserialize_map(self),
             MessyJson::Array(_) => deserializer.deserialize_seq(self),
         }
+    }
+}
+
+impl<'de> Visitor<'de> for MessyJsonObjectBuilder<'de> {
+    type Value = MessyJsonValueContainer<'de>;
+    #[inline]
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(formatter, "any valid json object")
+    }
+
+    #[inline]
+    fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_map(self)
+    }
+
+    #[inline]
+    fn visit_none<A>(self) -> Result<Self::Value, A>
+    where
+        A: serde::de::Error,
+    {
+        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null))
+    }
+
+    #[inline]
+    fn visit_map<A>(self, seq: A) -> Result<Self::Value, A::Error>
+    where
+        A: MapAccess<'de>,
+    {
+        messy_json_visit_map(seq, &self, self.inner())
     }
 }
