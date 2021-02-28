@@ -1,6 +1,6 @@
 use super::*;
 
-fn run_test<'a>(schema: &'a MessyJson<'a>, value: &'a str, expected: MessyJsonValue) {
+fn run_test<'a>(schema: &'a MessyJson<'a>, value: &'a str, expected: MessyJsonValue<'a>) {
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
     assert_eq!(

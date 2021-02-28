@@ -158,7 +158,9 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
     where
         A: serde::de::Error,
     {
-        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null))
+        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null(
+            Cow::Borrowed(self.inner()),
+        )))
     }
 
     #[inline]
@@ -199,7 +201,9 @@ impl<'de> Visitor<'de> for MessyJsonObjectBuilder<'de> {
     where
         A: serde::de::Error,
     {
-        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null))
+        Ok(MessyJsonValueContainer::new(MessyJsonValue::Null(
+            Cow::Owned(MessyJson::Obj(Cow::Borrowed(self.inner()))),
+        )))
     }
 
     #[inline]
