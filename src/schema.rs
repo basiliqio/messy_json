@@ -93,24 +93,36 @@ pub trait MessyJsonObjectTrait<'a> {
     /// Return a missing key if any, None otherwise
     fn compare_obj(
         schema: &'a MessyJsonObject<'a>,
-        res: &BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>,
+        res: &mut BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>,
     ) -> Option<String> {
+        let mut to_be_merged: BTreeMap<Cow<'a, str>, MessyJsonValue<'a>> = BTreeMap::new();
         let el = itertools::merge_join_by(schema.properties(), res.keys(), |(key1, _), key2| {
             Ord::cmp(key1.as_str(), key2)
         })
         .find(|merged| match merged {
             itertools::EitherOrBoth::Both(_, _) => false,
-            itertools::EitherOrBoth::Left((_key, val)) => !val.optional(),
+            itertools::EitherOrBoth::Left((key, val)) => match val.optional() {
+                true => {
+                    to_be_merged.insert(
+                        Cow::Borrowed(key),
+                        MessyJsonValue::Null(MessyJsonNullType::Absent, Cow::Borrowed(val)),
+                    );
+                    false
+                }
+                false => true,
+            },
             itertools::EitherOrBoth::Right(_) => true,
         });
-        el.map(|x| {
+        let missing_key = el.map(|x| {
             match x {
                 itertools::EitherOrBoth::Both(_, x) => x,
                 itertools::EitherOrBoth::Left((key, _val)) => key.as_str(),
                 itertools::EitherOrBoth::Right(x) => x,
             }
             .to_string()
-        })
+        });
+        res.append(&mut to_be_merged);
+        missing_key
     }
 }
 

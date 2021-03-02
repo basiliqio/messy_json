@@ -40,7 +40,7 @@ where
         res.insert(key_str, seq.next_value_seed(nested_val)?.take());
     }
     if obj.properties().len() != res.len() {
-        MessyJsonBuilder::compare_obj(obj, &res).map_or(Ok(()), |x| {
+        MessyJsonBuilder::compare_obj(obj, &mut res).map_or(Ok(()), |x| {
             Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
         })?;
     }
@@ -159,6 +159,7 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
         A: serde::de::Error,
     {
         Ok(MessyJsonValueContainer::new(MessyJsonValue::Null(
+            MessyJsonNullType::Null,
             Cow::Borrowed(self.inner()),
         )))
     }
@@ -202,6 +203,7 @@ impl<'de> Visitor<'de> for MessyJsonObjectBuilder<'de> {
         A: serde::de::Error,
     {
         Ok(MessyJsonValueContainer::new(MessyJsonValue::Null(
+            MessyJsonNullType::Absent,
             Cow::Owned(MessyJson::Obj(Cow::Borrowed(self.inner()))),
         )))
     }

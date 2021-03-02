@@ -7,6 +7,13 @@ use std::ops::Deref;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MessyJsonObjectValue<'a>(BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>);
 
+/// ## Deserialized JSON Object Value
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum MessyJsonNullType {
+    Null,
+    Absent,
+}
+
 impl<'a> Deref for MessyJsonObjectValue<'a> {
     type Target = BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>;
 
@@ -65,7 +72,7 @@ pub enum MessyJsonValue<'a> {
     Number(u128),
     Obj(MessyJsonObjectValue<'a>),
     String(Cow<'a, str>),
-    Null(Cow<'a, MessyJson<'a>>),
+    Null(MessyJsonNullType, Cow<'a, MessyJson<'a>>),
 }
 
 impl<'a> PartialEq<Value> for MessyJsonObjectValue<'a> {
@@ -111,7 +118,7 @@ impl<'a> PartialEq<Value> for MessyJsonValue<'a> {
             }
             (MessyJsonValue::Obj(mj_obj), Value::Object(_)) => mj_obj.eq(other),
             (MessyJsonValue::String(mj_str), Value::String(v_str)) => mj_str == v_str,
-            (MessyJsonValue::Null(_), Value::Null) => true,
+            (MessyJsonValue::Null(_, _), Value::Null) => true,
             _ => false,
         }
     }
