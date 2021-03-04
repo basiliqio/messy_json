@@ -1,6 +1,7 @@
 use super::*;
 use serde::de::DeserializeSeed;
 
+mod all_optional;
 mod cmp_value;
 mod null_vs_absent;
 mod parse_array_object;

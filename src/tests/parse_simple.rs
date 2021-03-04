@@ -2,7 +2,10 @@ use super::*;
 
 fn run_flat_test<'a>(schema: &'a MessyJson<'a>, value: &'a str, expected: MessyJsonValue<'a>) {
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
+    let parsed: MessyJsonValueContainer = schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
     assert_eq!(
         matches!(parsed.inner(), MessyJsonValue::Obj(_)),
         true,

@@ -21,8 +21,8 @@ impl<'a> MessyJsonObject<'a> {
     }
 
     #[inline]
-    pub fn builder(&'a self) -> MessyJsonObjectBuilder<'a> {
-        MessyJsonObjectBuilder::new(self)
+    pub fn builder(&'a self, all_optional: bool) -> MessyJsonObjectBuilder<'a> {
+        MessyJsonObjectBuilder::new(self, all_optional)
     }
 
     /// Get a reference to the [MessyJsonObject](MessyJsonObject)'s properties

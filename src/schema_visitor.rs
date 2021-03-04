@@ -11,9 +11,10 @@ where
     V: MessyJsonObjectTrait<'de>,
 {
     let mut res: BTreeMap<Cow<'de, str>, MessyJsonValue> = BTreeMap::new();
-    while let Some(key_seed) = seq.next_key_seed(visitor.new_nested(&MessyJson::String(
-        Cow::Owned(MessyJsonScalar { optional: false }),
-    )))? {
+    while let Some(key_seed) = seq.next_key_seed(visitor.new_nested(
+        &MessyJson::String(Cow::Owned(MessyJsonScalar { optional: false })),
+        visitor.all_optional(),
+    ))? {
         let (val_schema, key_str) = match key_seed.take() {
             MessyJsonValue::String(val) => (
                 obj.properties().get(&*val).ok_or_else(|| {
@@ -36,10 +37,10 @@ where
                 ));
             }
         };
-        let nested_val = visitor.new_nested(&val_schema);
+        let nested_val = visitor.new_nested(&val_schema, visitor.all_optional());
         res.insert(key_str, seq.next_value_seed(nested_val)?.take());
     }
-    if obj.properties().len() != res.len() {
+    if !visitor.all_optional() && obj.properties().len() != res.len() {
         MessyJsonBuilder::compare_obj(obj, &mut res).map_or(Ok(()), |x| {
             Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
         })?;
@@ -65,7 +66,9 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
 
         match self.inner() {
             MessyJson::Array(arr_type) => {
-                while let Some(elem) = seq.next_element_seed(self.new_nested(arr_type.items()))? {
+                while let Some(elem) =
+                    seq.next_element_seed(self.new_nested(arr_type.items(), self.all_optional()))?
+                {
                     res.push(elem.take())
                 }
                 Ok(MessyJsonValueContainer::new(MessyJsonValue::Array(

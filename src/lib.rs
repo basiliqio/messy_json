@@ -99,7 +99,7 @@
 //! # false,
 //! # )));
 //! let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
-//! let val: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
+//! let val: MessyJsonValueContainer = schema.builder(false).deserialize(&mut deserializer).unwrap();
 //!
 //! println!("{:#?}", val.inner());
 //! ```

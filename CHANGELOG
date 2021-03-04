@@ -6,6 +6,7 @@ document that MUST be either an object/an array
 - `MessyJsonObject` can be `into` `MessyJson` without further allocation
 - `MessyJsonObject` has a its own builder object
 - New trait added to factorize the common points between `MessyJsonObjectBuilder` and `MessyJsonBuilder`
+- Parameter to make a builder where all fields are optional
 
 ### Changed
 - `MessyJson` and `MessyJsonObject` now take a lifetime argument

@@ -67,7 +67,10 @@ fn gen_messy_json_schema_optional_obj<'a>() -> MessyJson<'a> {
 
 fn parse_messy_json_optional_obj<'a>(schema: &'a MessyJson<'a>) {
     let mut deserializer = serde_json::Deserializer::from_str(OPTIONAL_OBJ);
-    let _parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
+    let _parsed: MessyJsonValueContainer = schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
 }
 
 pub fn criterion_benchmark(c: &mut Criterion) {

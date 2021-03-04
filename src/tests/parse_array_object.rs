@@ -2,7 +2,10 @@ use super::*;
 
 fn run_test<'a>(schema: &'a MessyJson<'a>, value: &'a str) {
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
+    let parsed: MessyJsonValueContainer = schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
     assert_eq!(
         matches!(parsed.inner(), MessyJsonValue::Obj(_)),
         true,
@@ -86,7 +89,7 @@ fn wrong_value() {
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
     schema
-        .builder()
+        .builder(false)
         .deserialize(&mut deserializer)
         .expect_err("the value type should produce an error");
 }

@@ -16,8 +16,8 @@ pub enum MessyJson<'a> {
 
 impl<'a> MessyJson<'a> {
     /// Return a builder, to deserialize an object with
-    pub fn builder(&'a self) -> MessyJsonBuilder<'a> {
-        MessyJsonBuilder::new(&self)
+    pub fn builder(&'a self, all_optional: bool) -> MessyJsonBuilder<'a> {
+        MessyJsonBuilder::new(&self, all_optional)
     }
 
     /// Check if the inner value of this enum is optional
@@ -69,24 +69,29 @@ impl<'a> From<&'a MessyJsonNumeric> for MessyJson<'a> {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonBuilder<'a> {
     schema: &'a MessyJson<'a>,
+    all_optional: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonObjectBuilder<'a> {
     schema: &'a MessyJsonObject<'a>,
+    all_optional: bool,
 }
 
 pub trait MessyJsonObjectTrait<'a> {
     type Input;
 
     /// Create a new builder from a [MessyJson](MessyJson)
-    fn new(schema: &'a Self::Input) -> Self;
+    fn new(schema: &'a Self::Input, all_optional: bool) -> Self;
 
     /// Get the inner [MessyJson](MessyJson)
     fn inner(&self) -> &'a Self::Input;
 
+    /// True if fields presence shouldn't be checked
+    fn all_optional(&self) -> bool;
+
     /// Create a new nested schema providing the nested schema and self
-    fn new_nested(&self, schema: &'a MessyJson<'a>) -> MessyJsonBuilder<'a>;
+    fn new_nested(&self, schema: &'a MessyJson<'a>, all_optional: bool) -> MessyJsonBuilder<'a>;
 
     /// Compare that a deserialized object have all the required fields are available.
     ///
@@ -130,8 +135,11 @@ impl<'a> MessyJsonObjectTrait<'a> for MessyJsonBuilder<'a> {
     type Input = MessyJson<'a>;
 
     #[inline]
-    fn new(schema: &'a Self::Input) -> Self {
-        MessyJsonBuilder { schema }
+    fn new(schema: &'a Self::Input, all_optional: bool) -> Self {
+        MessyJsonBuilder {
+            schema,
+            all_optional,
+        }
     }
 
     #[inline]
@@ -140,8 +148,16 @@ impl<'a> MessyJsonObjectTrait<'a> for MessyJsonBuilder<'a> {
     }
 
     #[inline]
-    fn new_nested(&self, schema: &'a MessyJson<'a>) -> MessyJsonBuilder<'a> {
-        MessyJsonBuilder { schema }
+    fn all_optional(&self) -> bool {
+        self.all_optional
+    }
+
+    #[inline]
+    fn new_nested(&self, schema: &'a MessyJson<'a>, all_optional: bool) -> MessyJsonBuilder<'a> {
+        MessyJsonBuilder {
+            schema,
+            all_optional,
+        }
     }
 }
 
@@ -149,8 +165,11 @@ impl<'a> MessyJsonObjectTrait<'a> for MessyJsonObjectBuilder<'a> {
     type Input = MessyJsonObject<'a>;
 
     #[inline]
-    fn new(schema: &'a Self::Input) -> Self {
-        MessyJsonObjectBuilder { schema }
+    fn new(schema: &'a Self::Input, all_optional: bool) -> Self {
+        MessyJsonObjectBuilder {
+            schema,
+            all_optional,
+        }
     }
 
     #[inline]
@@ -159,8 +178,13 @@ impl<'a> MessyJsonObjectTrait<'a> for MessyJsonObjectBuilder<'a> {
     }
 
     #[inline]
-    fn new_nested(&self, schema: &'a MessyJson<'a>) -> MessyJsonBuilder<'a> {
-        MessyJsonBuilder::new(schema)
+    fn all_optional(&self) -> bool {
+        self.all_optional
+    }
+
+    #[inline]
+    fn new_nested(&self, schema: &'a MessyJson<'a>, all_optional: bool) -> MessyJsonBuilder<'a> {
+        MessyJsonBuilder::new(schema, all_optional)
     }
 }
 
@@ -172,26 +196,26 @@ impl<'de> DeserializeSeed<'de> for MessyJsonBuilder<'de> {
         D: Deserializer<'de>,
     {
         match self.inner() {
-            MessyJson::Bool(opt) => match opt.optional() {
+            MessyJson::Bool(opt) => match opt.optional() || self.all_optional() {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_bool(self),
             },
-            MessyJson::String(opt) => match opt.optional() {
+            MessyJson::String(opt) => match opt.optional() || self.all_optional() {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_str(self),
             },
-            MessyJson::Number(opt) => match opt.optional() {
+            MessyJson::Number(opt) => match opt.optional() || self.all_optional() {
                 true => deserializer.deserialize_option(self),
                 false => match opt.type_() {
                     MessyJsonNumberType::U64 => deserializer.deserialize_u64(self),
                     MessyJsonNumberType::U128 => deserializer.deserialize_u128(self),
                 },
             },
-            MessyJson::Obj(opt) => match opt.optional() {
+            MessyJson::Obj(opt) => match opt.optional() || self.all_optional() {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_map(self),
             },
-            MessyJson::Array(opt) => match opt.optional() {
+            MessyJson::Array(opt) => match opt.optional() || self.all_optional() {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_seq(self),
             },

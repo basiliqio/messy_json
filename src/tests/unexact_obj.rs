@@ -17,7 +17,10 @@ fn unknown() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed = schema.builder().deserialize(&mut deserializer).unwrap_err();
+    let parsed = schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap_err();
     println!("{:#?}", parsed);
 }
 
@@ -36,7 +39,10 @@ fn missing() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed = schema.builder().deserialize(&mut deserializer).unwrap_err();
+    let parsed = schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap_err();
     println!("{:#?}", parsed);
 }
 
@@ -63,7 +69,10 @@ fn complete_with_optional() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    schema.builder().deserialize(&mut deserializer).unwrap();
+    schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
 }
 
 #[test]
@@ -88,7 +97,10 @@ fn incomplete_with_optional() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    schema.builder().deserialize(&mut deserializer).unwrap();
+    schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
 }
 
 #[test]
@@ -113,7 +125,10 @@ fn incomplete_with_optional2() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    schema.builder().deserialize(&mut deserializer).unwrap();
+    schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
 }
 
 #[test]
@@ -135,7 +150,10 @@ fn all_optional() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    schema.builder().deserialize(&mut deserializer).unwrap();
+    schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
 }
 
 #[test]
@@ -168,7 +186,10 @@ fn nested_missing() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed = schema.builder().deserialize(&mut deserializer).unwrap_err();
+    let parsed = schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap_err();
     println!("{:#?}", parsed);
 }
 
@@ -205,7 +226,10 @@ fn nested_unknown() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed = schema.builder().deserialize(&mut deserializer).unwrap_err();
+    let parsed = schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap_err();
     println!("{:#?}", parsed);
 }
 
@@ -240,7 +264,10 @@ fn nested_optional() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    schema.builder().deserialize(&mut deserializer).unwrap();
+    schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
 }
 
 #[test]
@@ -273,5 +300,8 @@ fn nested_optional_parent_optional() {
 	"#;
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    schema.builder().deserialize(&mut deserializer).unwrap();
+    schema
+        .builder(false)
+        .deserialize(&mut deserializer)
+        .unwrap();
 }
