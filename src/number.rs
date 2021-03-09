@@ -2,7 +2,7 @@
 ///
 /// Describe a JSON Number at runtime. The type of number is to differentiate normal
 /// `u64` value from bigger `u128` (and more expensive) numbers.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct MessyJsonNumeric {
     optional: bool,
     type_: MessyJsonNumberType,
@@ -16,7 +16,7 @@ impl MessyJsonNumeric {
 }
 
 /// ## JSON Number type schema
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum MessyJsonNumberType {
     U64,
     U128,

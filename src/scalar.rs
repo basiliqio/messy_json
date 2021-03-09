@@ -1,7 +1,7 @@
 /// ## JSON Scalar schema value
 ///
 /// Simple struct to specifiy if a JSON scalar value is optional or not
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct MessyJsonScalar {
     pub optional: bool,
 }

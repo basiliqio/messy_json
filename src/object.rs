@@ -5,7 +5,7 @@ use crate::schema::MessyJsonObjectTrait;
 ///
 /// Describe a JSON Object at runtime specify if the object may be null and its
 /// properties
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct MessyJsonObject<'a> {
     optional: bool,
     properties: BTreeMap<String, MessyJson<'a>>,

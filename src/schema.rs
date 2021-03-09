@@ -5,7 +5,7 @@ use super::*;
 /// This enum describes in broad strokes how a JSON should look like when deserialized.
 ///
 /// At deserialization, this enum will ensure that the JSON Value corresponds to this schema.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum MessyJson<'a> {
     Array(Box<MessyJsonArray<'a>>),
     Bool(Cow<'a, MessyJsonScalar>),

@@ -10,7 +10,7 @@ use super::*;
 /// ### Limitations
 ///
 /// This objects cannot describe multiple types of childrens
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct MessyJsonArray<'a> {
     optional: bool,
     items: MessyJson<'a>,
