@@ -12,6 +12,8 @@ pub enum MessyJson<'a> {
     Number(Cow<'a, MessyJsonNumeric>),
     Obj(Cow<'a, MessyJsonObject<'a>>),
     String(Cow<'a, MessyJsonScalar>),
+    #[cfg(feature = "uuid")]
+    Uuid(Cow<'a, MessyJsonScalar>),
 }
 
 impl<'a> MessyJson<'a> {
@@ -28,6 +30,8 @@ impl<'a> MessyJson<'a> {
             MessyJson::Number(x) => x.optional(),
             MessyJson::Obj(x) => x.optional(),
             MessyJson::String(x) => x.optional(),
+            #[cfg(feature = "uuid")]
+            MessyJson::Uuid(x) => x.optional(),
         }
     }
 }
@@ -218,6 +222,11 @@ impl<'de> DeserializeSeed<'de> for MessyJsonBuilder<'de> {
             MessyJson::Array(opt) => match opt.optional() || self.all_optional() {
                 true => deserializer.deserialize_option(self),
                 false => deserializer.deserialize_seq(self),
+            },
+            #[cfg(feature = "uuid")]
+            MessyJson::Uuid(opt) => match opt.optional() || self.all_optional() {
+                true => deserializer.deserialize_option(self),
+                false => deserializer.deserialize_str(self),
             },
         }
     }

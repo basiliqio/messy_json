@@ -72,6 +72,8 @@ pub enum MessyJsonValue<'a> {
     Number(u128),
     Obj(MessyJsonObjectValue<'a>),
     String(Cow<'a, str>),
+    #[cfg(feature = "uuid")]
+    Uuid(Cow<'a, _uuid::Uuid>),
     Null(MessyJsonNullType, Cow<'a, MessyJson<'a>>),
 }
 
@@ -99,6 +101,16 @@ impl<'a> PartialEq<Value> for MessyJsonArrayValue<'a> {
     fn eq(&self, other: &Value) -> bool {
         match other {
             Value::Array(v_arr) => self.0.eq(v_arr),
+            _ => false,
+        }
+    }
+}
+
+#[cfg(feature = "uuid")]
+impl<'a> PartialEq<_uuid::Uuid> for MessyJsonValue<'a> {
+    fn eq(&self, other: &_uuid::Uuid) -> bool {
+        match self {
+            MessyJsonValue::Uuid(v_uuid) => *v_uuid == Cow::Borrowed(other),
             _ => false,
         }
     }

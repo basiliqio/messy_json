@@ -119,6 +119,12 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
             MessyJson::String(_) => Ok(MessyJsonValueContainer::new(MessyJsonValue::String(
                 Cow::from(v),
             ))),
+            #[cfg(feature = "uuid")]
+            MessyJson::Uuid(_) => Ok(MessyJsonValueContainer::new(MessyJsonValue::Uuid(
+                Cow::Owned(_uuid::Uuid::parse_str(v).map_err(|e| {
+                    serde::de::Error::custom(format!("Failed to deserialize UUID: {}", e))
+                })?),
+            ))),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Str(v),
                 &"String",
@@ -181,6 +187,8 @@ impl<'de> Visitor<'de> for MessyJsonBuilder<'de> {
             },
             MessyJson::Obj(_) => deserializer.deserialize_map(self),
             MessyJson::Array(_) => deserializer.deserialize_seq(self),
+            #[cfg(feature = "uuid")]
+            MessyJson::Uuid(_) => deserializer.deserialize_str(self),
         }
     }
 }

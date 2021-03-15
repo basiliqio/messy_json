@@ -8,6 +8,7 @@ document that MUST be either an object/an array
 - New trait added to factorize the common points between `MessyJsonObjectBuilder` and `MessyJsonBuilder`
 - Parameter to make a builder where all fields are optional
 - Added the `Hash` trait on schema objects
+- Added support for `uuid` behind a feature flag
 
 ### Changed
 - `MessyJson` and `MessyJsonObject` now take a lifetime argument
