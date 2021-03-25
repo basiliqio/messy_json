@@ -4,7 +4,7 @@ use std::convert::From;
 use std::ops::Deref;
 
 /// ## Deserialized JSON Object Value
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MessyJsonObjectValue<'a>(BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>);
 
 /// ## Deserialized JSON Object Value
