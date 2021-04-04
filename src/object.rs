@@ -1,6 +1,10 @@
 use super::*;
 use crate::schema::MessyJsonObjectTrait;
 
+#[cfg(not(feature = "arcstr"))]
+type KeyType = String;
+#[cfg(feature = "arcstr")]
+type KeyType = ArcStr;
 /// ## JSON Object schema value
 ///
 /// Describe a JSON Object at runtime specify if the object may be null and its
@@ -8,14 +12,17 @@ use crate::schema::MessyJsonObjectTrait;
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Default)]
 pub struct MessyJsonObject<'a> {
     optional: bool,
-    properties: BTreeMap<String, MessyJson<'a>>,
+    properties: BTreeMap<KeyType, MessyJson<'a>>,
 }
 
 impl<'a> MessyJsonObject<'a> {
     /// Create a new [MessyJsonObject](MessyJsonObject)
     pub fn new(properties: BTreeMap<String, MessyJson<'a>>, optional: bool) -> Self {
         MessyJsonObject {
-            properties,
+            properties: properties
+                .into_iter()
+                .map(|(k, v)| (KeyType::from(k), v))
+                .collect(),
             optional,
         }
     }
@@ -27,7 +34,7 @@ impl<'a> MessyJsonObject<'a> {
 
     /// Get a reference to the [MessyJsonObject](MessyJsonObject)'s properties
     #[inline]
-    pub fn properties(&self) -> &BTreeMap<String, MessyJson<'a>> {
+    pub fn properties(&self) -> &BTreeMap<KeyType, MessyJson<'a>> {
         &self.properties
     }
 
