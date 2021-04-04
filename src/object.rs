@@ -27,7 +27,7 @@ impl<'a> MessyJsonObject<'a> {
 
     /// Get a reference to the [MessyJsonObject](MessyJsonObject)'s properties
     #[inline]
-    pub fn properties(&'a self) -> &'a BTreeMap<String, MessyJson> {
+    pub fn properties(&self) -> &BTreeMap<String, MessyJson<'a>> {
         &self.properties
     }
 
