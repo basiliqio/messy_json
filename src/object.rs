@@ -19,10 +19,7 @@ impl<'a> MessyJsonObject<'a> {
     /// Create a new [MessyJsonObject](MessyJsonObject)
     pub fn new(properties: BTreeMap<String, MessyJson<'a>>, optional: bool) -> Self {
         MessyJsonObject {
-            properties: properties
-                .into_iter()
-                .map(|(k, v)| (KeyType::from(k), v))
-                .collect(),
+            properties: properties.into_iter().collect(),
             optional,
         }
     }
