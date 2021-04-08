@@ -2,13 +2,13 @@ use super::*;
 
 #[test]
 fn null() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
-    let schema: MessyJsonObject = MessyJsonObject::new(
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true)));
+    let schema = MessyJsonObject::from(MessyJsonObjectInner::new(
         vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
-    );
+    ));
     let value = r#"
 	{
 		"hello": null
@@ -31,13 +31,13 @@ fn null() {
 
 #[test]
 fn absent() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
-    let schema: MessyJsonObject = MessyJsonObject::new(
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true)));
+    let schema = MessyJsonObject::from(MessyJsonObjectInner::new(
         vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
-    );
+    ));
     let value = r#"
 	{
 	}

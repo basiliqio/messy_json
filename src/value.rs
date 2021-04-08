@@ -5,7 +5,7 @@ use std::ops::Deref;
 
 /// ## Deserialized JSON Object Value
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
-pub struct MessyJsonObjectValue<'a>(BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>);
+pub struct MessyJsonObjectValue<'a>(BTreeMap<ArcStr, MessyJsonValue<'a>>);
 
 /// ## Deserialized JSON Object Value
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -15,7 +15,7 @@ pub enum MessyJsonNullType {
 }
 
 impl<'a> Deref for MessyJsonObjectValue<'a> {
-    type Target = BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>;
+    type Target = BTreeMap<ArcStr, MessyJsonValue<'a>>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -23,13 +23,13 @@ impl<'a> Deref for MessyJsonObjectValue<'a> {
 }
 
 impl<'a> MessyJsonObjectValue<'a> {
-    pub fn take(self) -> BTreeMap<Cow<'a, str>, MessyJsonValue<'a>> {
+    pub fn take(self) -> BTreeMap<ArcStr, MessyJsonValue<'a>> {
         self.0
     }
 }
 
-impl<'a> From<BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>> for MessyJsonObjectValue<'a> {
-    fn from(obj: BTreeMap<Cow<'a, str>, MessyJsonValue<'a>>) -> Self {
+impl<'a> From<BTreeMap<ArcStr, MessyJsonValue<'a>>> for MessyJsonObjectValue<'a> {
+    fn from(obj: BTreeMap<ArcStr, MessyJsonValue<'a>>) -> Self {
         MessyJsonObjectValue(obj)
     }
 }
@@ -74,7 +74,7 @@ pub enum MessyJsonValue<'a> {
     String(Cow<'a, str>),
     #[cfg(feature = "uuid")]
     Uuid(Cow<'a, _uuid::Uuid>),
-    Null(MessyJsonNullType, Cow<'a, MessyJson<'a>>),
+    Null(MessyJsonNullType, MessyJsonExpected),
 }
 
 impl<'a> PartialEq<Value> for MessyJsonObjectValue<'a> {
@@ -82,7 +82,7 @@ impl<'a> PartialEq<Value> for MessyJsonObjectValue<'a> {
         match other {
             Value::Object(v_obj) => {
                 for (k, v) in self.iter() {
-                    if let Some(x) = v_obj.get(k.as_ref()) {
+                    if let Some(x) = v_obj.get(k.as_str()) {
                         if v != x {
                             return false;
                         }

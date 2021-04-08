@@ -2,8 +2,11 @@ use super::*;
 
 #[test]
 fn simple() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
-    let schema: MessyJson = MessyJson::Array(Box::new(MessyJsonArray::new(nested_string, false)));
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false)));
+    let schema = MessyJson::from(MessyJsonInner::Array(MessyJsonArray::new(
+        nested_string,
+        false,
+    )));
     let value = r#"
 	[
 		"hello",

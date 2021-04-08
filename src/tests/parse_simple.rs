@@ -1,6 +1,6 @@
 use super::*;
 
-fn run_flat_test<'a>(schema: &'a MessyJson<'a>, value: &'a str, expected: MessyJsonValue<'a>) {
+fn run_flat_test(schema: &MessyJson, value: &str, expected: MessyJsonValue) {
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema
         .builder(false)
@@ -36,12 +36,14 @@ fn run_flat_test<'a>(schema: &'a MessyJson<'a>, value: &'a str, expected: MessyJ
 
 #[test]
 fn string() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false)));
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -58,12 +60,14 @@ fn string() {
 
 #[test]
 fn bool() {
-    let nested_string = MessyJson::Bool(Cow::Owned(MessyJsonScalar::new(false)));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::Bool(MessyJsonScalar::new(false)));
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -75,15 +79,17 @@ fn bool() {
 
 #[test]
 fn number_tiny() {
-    let nested_string = MessyJson::Number(Cow::Owned(MessyJsonNumeric::new(
+    let nested_string = MessyJson::from(MessyJsonInner::Number(MessyJsonNumeric::new(
         MessyJsonNumberType::U64,
         false,
     )));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -95,15 +101,17 @@ fn number_tiny() {
 
 #[test]
 fn number_huge() {
-    let nested_string = MessyJson::Number(Cow::Owned(MessyJsonNumeric::new(
+    let nested_string = MessyJson::from(MessyJsonInner::Number(MessyJsonNumeric::new(
         MessyJsonNumberType::U128,
         false,
     )));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{

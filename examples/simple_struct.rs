@@ -30,27 +30,31 @@ fn parse_serde_struct() -> DummySerdeStruct<'static> {
     serde_json::from_str(DUMMY_OBJ).unwrap()
 }
 
-fn gen_messy_json_schema<'a>() -> MessyJson<'a> {
-    MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(
-            gen_key("hello"),
-            MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-                vec![(
-                    gen_key("hola"),
-                    MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
-                )]
-                .into_iter()
-                .collect(),
-                false,
-            ))),
-        )]
-        .into_iter()
-        .collect(),
-        false,
+fn gen_messy_json_schema() -> MessyJson {
+    MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(
+                gen_key("hello"),
+                MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+                    MessyJsonObjectInner::new(
+                        vec![(
+                            gen_key("hola"),
+                            MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
+                        )]
+                        .into_iter()
+                        .collect(),
+                        false,
+                    ),
+                ))),
+            )]
+            .into_iter()
+            .collect(),
+            false,
+        ),
     )))
 }
 
-fn parse_messy_json<'a>(schema: &'a MessyJson<'a>) -> MessyJsonValueContainer<'a> {
+fn parse_messy_json<'a>(schema: &MessyJson) -> MessyJsonValueContainer<'a> {
     let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
     schema
         .builder(false)

@@ -2,13 +2,15 @@ use super::*;
 
 #[test]
 fn uuid_simple() {
-    let nested_string = MessyJson::Uuid(Cow::Owned(MessyJsonScalar::new(false)));
+    let nested_string = MessyJson::from(MessyJsonInner::Uuid(MessyJsonScalar::new(false)));
     let test_uuid = _uuid::Uuid::parse_str("31ee8240-630b-416a-8c54-0e2a0d070488").unwrap();
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -50,12 +52,14 @@ fn uuid_simple() {
 
 #[test]
 fn bad_uuid() {
-    let nested_string = MessyJson::Uuid(Cow::Owned(MessyJsonScalar::new(false)));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::Uuid(MessyJsonScalar::new(false)));
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -71,13 +75,15 @@ fn bad_uuid() {
 
 #[test]
 fn optional_uuid_present() {
-    let nested_string = MessyJson::Uuid(Cow::Owned(MessyJsonScalar::new(true)));
+    let nested_string = MessyJson::from(MessyJsonInner::Uuid(MessyJsonScalar::new(true)));
     let test_uuid = _uuid::Uuid::parse_str("31ee8240-630b-416a-8c54-0e2a0d070488").unwrap();
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -119,12 +125,14 @@ fn optional_uuid_present() {
 
 #[test]
 fn optional_uuid_absent() {
-    let nested_string = MessyJson::Uuid(Cow::Owned(MessyJsonScalar::new(true)));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_string)]
-            .into_iter()
-            .collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::Uuid(MessyJsonScalar::new(true)));
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_string)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{

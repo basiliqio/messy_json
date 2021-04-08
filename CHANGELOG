@@ -9,10 +9,11 @@ document that MUST be either an object/an array
 - Parameter to make a builder where all fields are optional
 - Added the `Hash` trait on schema objects
 - Added support for `uuid` behind a feature flag
-- Added new optional feature `arcstr`, setting the key type of `MessyJsonObject` to `ArcStr`
+- Every keys are `ArcStr`
 
 ### Changed
 - `MessyJson` and `MessyJsonObject` now take a lifetime argument
+- No need for lifetime anymore, everything is shared using `Arc`
 
 ### Removed
 - `MessyJson::Null` is no longer available

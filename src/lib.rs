@@ -32,27 +32,27 @@
 //! # use messy_json::*;
 //! # use std::borrow::Cow;
 //!
-//! let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-//! vec![(
-//!     "hello".to_string(),
-//!     MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-//!         vec![(
-//!             "world".to_string(),
-//!             MessyJson::Number(Cow::Owned(MessyJsonNumeric::new(MessyJsonNumberType::U64, false))),
-//!         )]
-//!         .into_iter()
-//!         .collect(),
-//!         false,
-//!     ))),
-//! ),
+//! let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
+//!    vec![(
+//!        gen_key("hello"),
+//!        MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
+//!            vec![(
+//!                gen_key("world"),
+//!                MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
+//!            )]
+//!            .into_iter()
+//!            .collect(),
+//!            false,
+//!        )))),
+//!    ),
 //! (
-//!     "an_optional_one".to_string(),
-//!     MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)))
+//!     gen_key("an_optional_one"),
+//!     MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true)))
 //! )]
-//! .into_iter()
-//! .collect(),
-//! false,
-//! )));
+//!    .into_iter()
+//!    .collect(),
+//!    false,
+//! ))));
 //! ```
 //!
 //! Granted, this is a bit _wordy_ to define such a simple structure but keep in
@@ -77,27 +77,27 @@
 //!     }
 //! "#;
 //!
-//! # let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-//! # vec![(
-//! #     "hello".to_string(),
-//! #     MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-//! #         vec![(
-//! #             "world".to_string(),
-//! #             MessyJson::Number(Cow::Owned(MessyJsonNumeric::new(MessyJsonNumberType::U64, false))),
-//! #         )]
-//! #         .into_iter()
-//! #         .collect(),
-//! #         false,
-//! #     ))),
-//! # ),
+//! # let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
+//! #    vec![(
+//! #        gen_key("hello"),
+//! #        MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
+//! #            vec![(
+//! #                gen_key("world"),
+//! #                MessyJson::from(MessyJsonInner::Number(MessyJsonNumeric::new(MessyJsonNumberType::U64, false))),
+//! #            )]
+//! #            .into_iter()
+//! #            .collect(),
+//! #            false,
+//! #        )))),
+//! #    ),
 //! # (
-//! #     "an_optional_one".to_string(),
-//! #     MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)))
+//! #     gen_key("an_optional_one"),
+//! #     MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true)))
 //! # )]
-//! # .into_iter()
-//! # .collect(),
-//! # false,
-//! # )));
+//! #    .into_iter()
+//! #    .collect(),
+//! #    false,
+//! # ))));
 //! let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
 //! let val: MessyJsonValueContainer = schema.builder(false).deserialize(&mut deserializer).unwrap();
 //!
@@ -105,11 +105,12 @@
 //! ```
 
 #![warn(clippy::all)]
-#[cfg(feature = "arcstr")]
-use _arcstr::ArcStr;
+use arcstr::ArcStr;
 use serde::de::{DeserializeSeed, Deserializer, MapAccess, SeqAccess, Visitor};
 use std::borrow::Cow;
 use std::collections::BTreeMap;
+use std::ops::Deref;
+use std::sync::Arc;
 
 mod array;
 mod number;
@@ -124,9 +125,11 @@ mod tests;
 
 pub use array::MessyJsonArray;
 pub use number::{MessyJsonNumberType, MessyJsonNumeric};
-pub use object::{gen_key, KeyType, MessyJsonObject};
+pub use object::{gen_key, KeyType, MessyJsonObject, MessyJsonObjectInner};
 pub use scalar::MessyJsonScalar;
-pub use schema::{MessyJson, MessyJsonBuilder, MessyJsonObjectBuilder};
+pub use schema::{
+    MessyJson, MessyJsonBuilder, MessyJsonExpected, MessyJsonInner, MessyJsonObjectBuilder,
+};
 pub use value::{
     MessyJsonArrayValue, MessyJsonNullType, MessyJsonObjectValue, MessyJsonValue,
     MessyJsonValueContainer,

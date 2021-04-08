@@ -2,16 +2,20 @@ use super::*;
 
 #[test]
 fn all_absent() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
-    let nested_schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("the"), nested_string)].into_iter().collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false)));
+    let nested_schema: MessyJson = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("the"), nested_string)].into_iter().collect(),
+            false,
+        ),
     )));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_schema)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema: MessyJson = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_schema)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -40,16 +44,20 @@ fn all_absent() {
 
 #[test]
 fn mix_absent() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
-    let nested_schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("the"), nested_string)].into_iter().collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false)));
+    let nested_schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("the"), nested_string)].into_iter().collect(),
+            false,
+        ),
     )));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_schema)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_schema)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -97,16 +105,20 @@ fn mix_absent() {
 
 #[test]
 fn all_present() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
-    let nested_schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("the"), nested_string)].into_iter().collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false)));
+    let nested_schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("the"), nested_string)].into_iter().collect(),
+            false,
+        ),
     )));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_schema)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_schema)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{
@@ -165,16 +177,20 @@ fn all_present() {
 
 #[test]
 fn unkown_keys() {
-    let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
-    let nested_schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("the"), nested_string)].into_iter().collect(),
-        false,
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false)));
+    let nested_schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("the"), nested_string)].into_iter().collect(),
+            false,
+        ),
     )));
-    let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![(gen_key("hello"), nested_schema)]
-            .into_iter()
-            .collect(),
-        false,
+    let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![(gen_key("hello"), nested_schema)]
+                .into_iter()
+                .collect(),
+            false,
+        ),
     )));
     let value = r#"
 	{

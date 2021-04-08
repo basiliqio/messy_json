@@ -11,14 +11,13 @@ license = "MIT"
 
 [features]
 uuid = ["_uuid"]
-arcstr = ["_arcstr"]
 
 [dependencies]
 serde = "1"
 serde_json = "1"
 itertools = "0.10.0"
 _uuid = { package = "uuid", version = "0.8", features = [ "v4", "serde" ], optional = true }
-_arcstr = { package = "arcstr", version = "1", features = [ "std", "serde" ], optional = true }
+arcstr = { version = "1", features = [ "std", "serde" ] }
 
 [dev-dependencies]
 criterion = { version = "0.3.4", features = [ "html_reports", "cargo_bench_support" ] }
@@ -28,7 +27,6 @@ serde = { version = "1", features = [ "derive" ] }
 version = "1"
 default-features = false # Disable features which are enabled by default
 features = ["precommit-hook", "run-cargo-check", "run-cargo-fmt"]
-
 
 # TODO : Use `bumpalo` for greater performance while deserializing
 

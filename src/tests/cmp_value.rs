@@ -36,28 +36,28 @@ const VAL: &str = r#"
 }
 "#;
 
-fn gen_parser<'a>() -> MessyJson<'a> {
-    let schema_nested2_obj = MessyJsonObject::new(
+fn gen_parser() -> MessyJson {
+    let schema_nested2_obj = MessyJsonObject::from(MessyJsonObjectInner::new(
         vec![
             (
                 gen_key("hello"),
-                MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
             ),
             (
                 gen_key("number"),
-                MessyJson::Number(Cow::Owned(MessyJsonNumeric::new(
+                MessyJson::from(MessyJsonInner::Number(MessyJsonNumeric::new(
                     MessyJsonNumberType::U64,
                     false,
                 ))),
             ),
             (
                 gen_key("bool"),
-                MessyJson::Bool(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::Bool(MessyJsonScalar::new(false))),
             ),
             (
                 gen_key("array"),
-                MessyJson::Array(Box::new(MessyJsonArray::new(
-                    MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::Array(MessyJsonArray::new(
+                    MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
                     false,
                 ))),
             ),
@@ -65,76 +65,78 @@ fn gen_parser<'a>() -> MessyJson<'a> {
         .into_iter()
         .collect(),
         false,
-    );
-    let schema_nested1_obj: MessyJsonObject = MessyJsonObject::new(
+    ));
+    let schema_nested1_obj: MessyJsonObjectInner = MessyJsonObjectInner::new(
         vec![
             (
                 gen_key("hello"),
-                MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
             ),
             (
                 gen_key("number"),
-                MessyJson::Number(Cow::Owned(MessyJsonNumeric::new(
+                MessyJson::from(MessyJsonInner::Number(MessyJsonNumeric::new(
                     MessyJsonNumberType::U64,
                     false,
                 ))),
             ),
             (
                 gen_key("bool"),
-                MessyJson::Bool(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::Bool(MessyJsonScalar::new(false))),
             ),
             (
                 gen_key("array"),
-                MessyJson::Array(Box::new(MessyJsonArray::new(
-                    MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::Array(MessyJsonArray::new(
+                    MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
                     false,
                 ))),
             ),
             (
                 gen_key("obj"),
-                MessyJson::Obj(Cow::Owned(schema_nested2_obj)),
+                MessyJson::from(MessyJsonInner::Obj(schema_nested2_obj)),
             ),
         ]
         .into_iter()
         .collect(),
         false,
     );
-    let schema_root_obj: MessyJsonObject = MessyJsonObject::new(
+    let schema_root_obj: MessyJsonObjectInner = MessyJsonObjectInner::new(
         vec![
             (
                 gen_key("hello"),
-                MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
             ),
             (
                 gen_key("number"),
-                MessyJson::Number(Cow::Owned(MessyJsonNumeric::new(
+                MessyJson::from(MessyJsonInner::Number(MessyJsonNumeric::new(
                     MessyJsonNumberType::U64,
                     false,
                 ))),
             ),
             (
                 gen_key("bool"),
-                MessyJson::Bool(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::Bool(MessyJsonScalar::new(false))),
             ),
             (
                 gen_key("array"),
-                MessyJson::Array(Box::new(MessyJsonArray::new(
-                    MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
+                MessyJson::from(MessyJsonInner::Array(MessyJsonArray::new(
+                    MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
                     false,
                 ))),
             ),
             (
                 gen_key("obj"),
-                MessyJson::Obj(Cow::Owned(schema_nested1_obj)),
+                MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+                    schema_nested1_obj,
+                ))),
             ),
         ]
         .into_iter()
         .collect(),
         false,
     );
-    let schema_root: MessyJson = MessyJson::Obj(Cow::Owned(schema_root_obj));
+    let schema_root: MessyJsonInner = MessyJsonInner::Obj(MessyJsonObject::from(schema_root_obj));
 
-    schema_root
+    MessyJson::from(schema_root)
 }
 
 #[test]

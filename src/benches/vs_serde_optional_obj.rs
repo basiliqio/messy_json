@@ -31,41 +31,47 @@ fn parse_serde_value_optional_obj(input: &str) -> Value {
     serde_json::from_str(input).unwrap()
 }
 
-fn gen_messy_json_schema_optional_obj<'a>() -> MessyJson<'a> {
-    MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![
-            (
-                gen_key("hello"),
-                MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-                    vec![(
-                        gen_key("hola"),
-                        MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
-                    )]
-                    .into_iter()
-                    .collect(),
-                    false,
-                ))),
-            ),
-            (
-                gen_key("coucou"),
-                MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
-            ),
-            (
-                gen_key("coucou1"),
-                MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
-            ),
-            (
-                gen_key("coucou2"),
-                MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
-            ),
-        ]
-        .into_iter()
-        .collect(),
-        false,
+fn gen_messy_json_schema_optional_obj() -> MessyJson {
+    MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+        MessyJsonObjectInner::new(
+            vec![
+                (
+                    gen_key("hello"),
+                    MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
+                        MessyJsonObjectInner::new(
+                            vec![(
+                                gen_key("hola"),
+                                MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(
+                                    false,
+                                ))),
+                            )]
+                            .into_iter()
+                            .collect(),
+                            false,
+                        ),
+                    ))),
+                ),
+                (
+                    gen_key("coucou"),
+                    MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true))),
+                ),
+                (
+                    gen_key("coucou1"),
+                    MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true))),
+                ),
+                (
+                    gen_key("coucou2"),
+                    MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true))),
+                ),
+            ]
+            .into_iter()
+            .collect(),
+            false,
+        ),
     )))
 }
 
-fn parse_messy_json_optional_obj<'a>(schema: &'a MessyJson<'a>) {
+fn parse_messy_json_optional_obj(schema: &MessyJson) {
     let mut deserializer = serde_json::Deserializer::from_str(OPTIONAL_OBJ);
     let _parsed: MessyJsonValueContainer = schema
         .builder(false)
