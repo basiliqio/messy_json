@@ -124,7 +124,7 @@ mod tests;
 
 pub use array::MessyJsonArray;
 pub use number::{MessyJsonNumberType, MessyJsonNumeric};
-pub use object::MessyJsonObject;
+pub use object::{gen_key, KeyType, MessyJsonObject};
 pub use scalar::MessyJsonScalar;
 pub use schema::{MessyJson, MessyJsonBuilder, MessyJsonObjectBuilder};
 pub use value::{

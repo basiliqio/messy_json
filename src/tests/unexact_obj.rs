@@ -4,7 +4,7 @@ use super::*;
 fn unknown() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
@@ -28,7 +28,7 @@ fn unknown() {
 fn missing() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
@@ -52,9 +52,9 @@ fn complete_with_optional() {
     let nested_string_opt = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
-            ("hello".to_string(), nested_string.clone()),
-            ("whoami".to_string(), nested_string_opt),
-            ("hehe".to_string(), nested_string),
+            (gen_key("hello"), nested_string.clone()),
+            (gen_key("whoami"), nested_string_opt),
+            (gen_key("hehe"), nested_string),
         ]
         .into_iter()
         .collect(),
@@ -81,9 +81,9 @@ fn incomplete_with_optional() {
     let nested_string_opt = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
-            ("hello".to_string(), nested_string.clone()),
-            ("whoami".to_string(), nested_string_opt),
-            ("hehe".to_string(), nested_string),
+            (gen_key("hello"), nested_string.clone()),
+            (gen_key("whoami"), nested_string_opt),
+            (gen_key("hehe"), nested_string),
         ]
         .into_iter()
         .collect(),
@@ -109,9 +109,9 @@ fn incomplete_with_optional2() {
     let nested_string_opt = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
-            ("hello".to_string(), nested_string.clone()),
-            ("whoami".to_string(), nested_string),
-            ("hehe".to_string(), nested_string_opt),
+            (gen_key("hello"), nested_string.clone()),
+            (gen_key("whoami"), nested_string),
+            (gen_key("hehe"), nested_string_opt),
         ]
         .into_iter()
         .collect(),
@@ -136,9 +136,9 @@ fn all_optional() {
     let nested_string_opt = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
-            ("hello".to_string(), nested_string_opt.clone()),
-            ("whoami".to_string(), nested_string_opt.clone()),
-            ("hehe".to_string(), nested_string_opt),
+            (gen_key("hello"), nested_string_opt.clone()),
+            (gen_key("whoami"), nested_string_opt.clone()),
+            (gen_key("hehe"), nested_string_opt),
         ]
         .into_iter()
         .collect(),
@@ -162,16 +162,16 @@ fn nested_missing() {
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
             (
-                "hello".to_string(),
+                gen_key("hello"),
                 MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-                    vec![("world".to_string(), nested_string.clone())]
+                    vec![(gen_key("world"), nested_string.clone())]
                         .into_iter()
                         .collect(),
                     false,
                 ))),
             ),
-            ("whoami".to_string(), nested_string.clone()),
-            ("hehe".to_string(), nested_string),
+            (gen_key("whoami"), nested_string.clone()),
+            (gen_key("hehe"), nested_string),
         ]
         .into_iter()
         .collect(),
@@ -199,16 +199,16 @@ fn nested_unknown() {
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
             (
-                "hello".to_string(),
+                gen_key("hello"),
                 MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-                    vec![("world".to_string(), nested_string.clone())]
+                    vec![(gen_key("world"), nested_string.clone())]
                         .into_iter()
                         .collect(),
                     false,
                 ))),
             ),
-            ("whoami".to_string(), nested_string.clone()),
-            ("hehe".to_string(), nested_string),
+            (gen_key("whoami"), nested_string.clone()),
+            (gen_key("hehe"), nested_string),
         ]
         .into_iter()
         .collect(),
@@ -240,16 +240,16 @@ fn nested_optional() {
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
             (
-                "hello".to_string(),
+                gen_key("hello"),
                 MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-                    vec![("world".to_string(), nested_string_opt)]
+                    vec![(gen_key("world"), nested_string_opt)]
                         .into_iter()
                         .collect(),
                     false,
                 ))),
             ),
-            ("whoami".to_string(), nested_string.clone()),
-            ("hehe".to_string(), nested_string),
+            (gen_key("whoami"), nested_string.clone()),
+            (gen_key("hehe"), nested_string),
         ]
         .into_iter()
         .collect(),
@@ -277,16 +277,16 @@ fn nested_optional_parent_optional() {
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
             (
-                "hello".to_string(),
+                gen_key("hello"),
                 MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-                    vec![("world".to_string(), nested_string_opt)]
+                    vec![(gen_key("world"), nested_string_opt)]
                         .into_iter()
                         .collect(),
                     true, // Optional parent
                 ))),
             ),
-            ("whoami".to_string(), nested_string.clone()),
-            ("hehe".to_string(), nested_string),
+            (gen_key("whoami"), nested_string.clone()),
+            (gen_key("hehe"), nested_string),
         ]
         .into_iter()
         .collect(),

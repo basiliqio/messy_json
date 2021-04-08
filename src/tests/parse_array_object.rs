@@ -50,7 +50,7 @@ fn simple() {
     let nested_schema: MessyJson =
         MessyJson::Array(Box::new(MessyJsonArray::new(nested_string, false)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_schema)]
+        vec![(gen_key("hello"), nested_schema)]
             .into_iter()
             .collect(),
         false,
@@ -73,7 +73,7 @@ fn wrong_value() {
     let nested_schema: MessyJson =
         MessyJson::Array(Box::new(MessyJsonArray::new(nested_string, false)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_schema)]
+        vec![(gen_key("hello"), nested_schema)]
             .into_iter()
             .collect(),
         false,

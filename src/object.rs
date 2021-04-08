@@ -2,9 +2,9 @@ use super::*;
 use crate::schema::MessyJsonObjectTrait;
 
 #[cfg(not(feature = "arcstr"))]
-type KeyType = String;
+pub type KeyType = String;
 #[cfg(feature = "arcstr")]
-type KeyType = ArcStr;
+pub type KeyType = ArcStr;
 /// ## JSON Object schema value
 ///
 /// Describe a JSON Object at runtime specify if the object may be null and its
@@ -17,7 +17,7 @@ pub struct MessyJsonObject<'a> {
 
 impl<'a> MessyJsonObject<'a> {
     /// Create a new [MessyJsonObject](MessyJsonObject)
-    pub fn new(properties: BTreeMap<String, MessyJson<'a>>, optional: bool) -> Self {
+    pub fn new(properties: BTreeMap<KeyType, MessyJson<'a>>, optional: bool) -> Self {
         MessyJsonObject {
             properties: properties.into_iter().collect(),
             optional,
@@ -46,4 +46,11 @@ impl<'a> MessyJsonObject<'a> {
     pub fn optional(&self) -> bool {
         self.optional
     }
+}
+
+pub fn gen_key(k: &str) -> super::object::KeyType {
+    #[cfg(feature = "arcstr")]
+    return ArcStr::from(k);
+    #[cfg(not(feature = "arcstr"))]
+    return k.to_string();
 }

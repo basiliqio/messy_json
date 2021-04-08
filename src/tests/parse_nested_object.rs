@@ -53,13 +53,11 @@ fn run_test<'a>(schema: &'a MessyJson<'a>, value: &'a str, expected: MessyJsonVa
 fn simple() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let nested_schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("the".to_string(), nested_string)]
-            .into_iter()
-            .collect(),
+        vec![(gen_key("the"), nested_string)].into_iter().collect(),
         false,
     )));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_schema)]
+        vec![(gen_key("hello"), nested_schema)]
             .into_iter()
             .collect(),
         false,
@@ -83,13 +81,11 @@ fn simple() {
 fn wrong_key() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let nested_schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("the".to_string(), nested_string)]
-            .into_iter()
-            .collect(),
+        vec![(gen_key("the"), nested_string)].into_iter().collect(),
         false,
     )));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_schema)]
+        vec![(gen_key("hello"), nested_schema)]
             .into_iter()
             .collect(),
         false,
@@ -113,13 +109,11 @@ fn wrong_key() {
 fn wrong_value_type() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let nested_schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("the".to_string(), nested_string)]
-            .into_iter()
-            .collect(),
+        vec![(gen_key("the"), nested_string)].into_iter().collect(),
         false,
     )));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_schema)]
+        vec![(gen_key("hello"), nested_schema)]
             .into_iter()
             .collect(),
         false,

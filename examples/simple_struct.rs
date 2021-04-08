@@ -33,10 +33,10 @@ fn parse_serde_struct() -> DummySerdeStruct<'static> {
 fn gen_messy_json_schema<'a>() -> MessyJson<'a> {
     MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![(
-            "hello".to_string(),
+            gen_key("hello"),
             MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
                 vec![(
-                    "hola".to_string(),
+                    gen_key("hola"),
                     MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
                 )]
                 .into_iter()

@@ -35,10 +35,10 @@ fn gen_messy_json_schema_optional_obj<'a>() -> MessyJson<'a> {
     MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![
             (
-                "hello".to_string(),
+                gen_key("hello"),
                 MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
                     vec![(
-                        "hola".to_string(),
+                        gen_key("hola"),
                         MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
                     )]
                     .into_iter()
@@ -47,15 +47,15 @@ fn gen_messy_json_schema_optional_obj<'a>() -> MessyJson<'a> {
                 ))),
             ),
             (
-                "coucou".to_string(),
+                gen_key("coucou"),
                 MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
             ),
             (
-                "coucou1".to_string(),
+                gen_key("coucou1"),
                 MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
             ),
             (
-                "coucou2".to_string(),
+                gen_key("coucou2"),
                 MessyJson::String(Cow::Owned(MessyJsonScalar::new(true))),
             ),
         ]

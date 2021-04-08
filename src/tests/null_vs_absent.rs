@@ -4,7 +4,7 @@ use super::*;
 fn null() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
     let schema: MessyJsonObject = MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
@@ -33,7 +33,7 @@ fn null() {
 fn absent() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(true)));
     let schema: MessyJsonObject = MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,

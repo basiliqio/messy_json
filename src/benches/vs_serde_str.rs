@@ -24,7 +24,7 @@ fn parse_serde_value(input: &str) -> Value {
 fn gen_messy_json_schema<'a>() -> MessyJson<'a> {
     MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
         vec![(
-            "hello".to_string(),
+            gen_key("hello"),
             MessyJson::String(Cow::Owned(MessyJsonScalar::new(false))),
         )]
         .into_iter()

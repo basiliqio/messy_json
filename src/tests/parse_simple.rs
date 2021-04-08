@@ -38,7 +38,7 @@ fn run_flat_test<'a>(schema: &'a MessyJson<'a>, value: &'a str, expected: MessyJ
 fn string() {
     let nested_string = MessyJson::String(Cow::Owned(MessyJsonScalar::new(false)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
@@ -60,7 +60,7 @@ fn string() {
 fn bool() {
     let nested_string = MessyJson::Bool(Cow::Owned(MessyJsonScalar::new(false)));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
@@ -80,7 +80,7 @@ fn number_tiny() {
         false,
     )));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
@@ -100,7 +100,7 @@ fn number_huge() {
         false,
     )));
     let schema: MessyJson = MessyJson::Obj(Cow::Owned(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+        vec![(gen_key("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
