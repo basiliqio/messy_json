@@ -23,10 +23,17 @@ where
                     .join(", ")
             ))
         })?;
-        let nested_val = visitor.new_nested(&val_schema, visitor.all_optional());
+        let nested_val = visitor.new_nested(&val_schema, *visitor.settings());
         res.insert(key_str.clone(), seq.next_value_seed(nested_val)?.take());
     }
-    if !visitor.all_optional() && obj.properties().len() != res.len() {
+    if visitor.settings().all_optional() && visitor.settings().preserve_mandatory() {
+        MessyJsonBuilder::compare_obj_forced_null(obj, &mut res).map_or(Ok(()), |x| {
+            Err(serde::de::Error::custom(format!(
+                "Can't force mandatory key to null `{}`",
+                x
+            )))
+        })?;
+    } else if !visitor.settings().all_optional() && obj.properties().len() != res.len() {
         MessyJsonBuilder::compare_obj(obj, &mut res).map_or(Ok(()), |x| {
             Err(serde::de::Error::custom(format!("Missing key `{}`", x)))
         })?;
@@ -53,7 +60,7 @@ impl<'de> Visitor<'de> for MessyJsonBuilder {
         match self.inner().deref() {
             schema::MessyJsonInner::Array(arr_type) => {
                 while let Some(elem) =
-                    seq.next_element_seed(self.new_nested(arr_type.items(), self.all_optional()))?
+                    seq.next_element_seed(self.new_nested(arr_type.items(), *self.settings()))?
                 {
                     res.push(elem.take())
                 }

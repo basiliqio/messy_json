@@ -3,7 +3,7 @@ use super::*;
 fn run_test(schema: &MessyJson, value: &str) {
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -95,7 +95,7 @@ fn wrong_value() {
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
     schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .expect_err("the value type should produce an error");
 }

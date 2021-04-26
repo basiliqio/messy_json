@@ -22,8 +22,13 @@ fn all_absent() {
 	}
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed: MessyJsonValueContainer =
-        schema.builder(true).deserialize(&mut deserializer).unwrap();
+    let parsed: MessyJsonValueContainer = schema
+        .builder(MessyJsonSettings {
+            all_optional: true,
+            preserve_mandatory: false,
+        })
+        .deserialize(&mut deserializer)
+        .unwrap();
     assert_eq!(
         matches!(parsed.inner(), MessyJsonValue::Obj(_)),
         true,
@@ -68,8 +73,13 @@ fn mix_absent() {
 	}
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed: MessyJsonValueContainer =
-        schema.builder(true).deserialize(&mut deserializer).unwrap();
+    let parsed: MessyJsonValueContainer = schema
+        .builder(MessyJsonSettings {
+            all_optional: true,
+            preserve_mandatory: false,
+        })
+        .deserialize(&mut deserializer)
+        .unwrap();
     assert_eq!(
         matches!(parsed.inner(), MessyJsonValue::Obj(_)),
         true,
@@ -129,8 +139,13 @@ fn all_present() {
 	}
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
-    let parsed: MessyJsonValueContainer =
-        schema.builder(true).deserialize(&mut deserializer).unwrap();
+    let parsed: MessyJsonValueContainer = schema
+        .builder(MessyJsonSettings {
+            all_optional: true,
+            preserve_mandatory: false,
+        })
+        .deserialize(&mut deserializer)
+        .unwrap();
     assert_eq!(
         matches!(parsed.inner(), MessyJsonValue::Obj(_)),
         true,
@@ -199,7 +214,10 @@ fn unkown_keys() {
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
     schema
-        .builder(true)
+        .builder(MessyJsonSettings {
+            all_optional: true,
+            preserve_mandatory: false,
+        })
         .deserialize(&mut deserializer)
         .unwrap_err();
 }

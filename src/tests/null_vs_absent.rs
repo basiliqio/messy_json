@@ -17,7 +17,7 @@ fn null() {
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed = schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     match parsed.inner() {
@@ -45,7 +45,7 @@ fn absent() {
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed = schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     match parsed.inner() {

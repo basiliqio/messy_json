@@ -145,7 +145,7 @@ fn ok() {
     let mut deserializer = serde_json::Deserializer::from_str(VAL);
     let parsed_value: serde_json::Value = serde_json::from_str(VAL).unwrap();
     let parsed: MessyJsonValueContainer = parser
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
 
@@ -200,7 +200,7 @@ fn mismatch_string() {
 	"#;
     let parsed_value: serde_json::Value = serde_json::from_str(bogus_value).unwrap();
     let parsed: MessyJsonValueContainer = parser
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -254,7 +254,7 @@ fn mismatch_number() {
 	"#;
     let parsed_value: serde_json::Value = serde_json::from_str(bogus_value).unwrap();
     let parsed: MessyJsonValueContainer = parser
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -308,7 +308,7 @@ fn mismatch_bool() {
 	"#;
     let parsed_value: serde_json::Value = serde_json::from_str(bogus_value).unwrap();
     let parsed: MessyJsonValueContainer = parser
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -362,7 +362,7 @@ fn mismatch_array() {
 	"#;
     let parsed_value: serde_json::Value = serde_json::from_str(bogus_value).unwrap();
     let parsed: MessyJsonValueContainer = parser
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -416,7 +416,7 @@ fn mismatch_obj() {
 	"#;
     let parsed_value: serde_json::Value = serde_json::from_str(bogus_value).unwrap();
     let parsed: MessyJsonValueContainer = parser
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -470,7 +470,7 @@ fn mismatch_obj_nested() {
 	"#;
     let parsed_value: serde_json::Value = serde_json::from_str(bogus_value).unwrap();
     let parsed: MessyJsonValueContainer = parser
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(

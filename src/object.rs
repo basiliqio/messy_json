@@ -8,8 +8,8 @@ pub struct MessyJsonObject(Arc<MessyJsonObjectInner>);
 
 impl MessyJsonObject {
     #[inline]
-    pub fn builder(&self, all_optional: bool) -> MessyJsonObjectBuilder {
-        MessyJsonObjectBuilder::new(self, all_optional)
+    pub fn builder(&self, settings: MessyJsonSettings) -> MessyJsonObjectBuilder {
+        MessyJsonObjectBuilder::new(self, settings)
     }
 }
 

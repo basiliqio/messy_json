@@ -16,7 +16,7 @@ fn simple() {
 
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(

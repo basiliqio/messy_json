@@ -19,7 +19,7 @@ fn uuid_simple() {
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -68,7 +68,7 @@ fn bad_uuid() {
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
     schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap_err();
 }
@@ -92,7 +92,7 @@ fn optional_uuid_present() {
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(
@@ -141,7 +141,7 @@ fn optional_uuid_absent() {
 	"#;
     let mut deserializer = serde_json::Deserializer::from_str(value);
     let parsed: MessyJsonValueContainer = schema
-        .builder(false)
+        .builder(MessyJsonSettings::default())
         .deserialize(&mut deserializer)
         .unwrap();
     assert_eq!(

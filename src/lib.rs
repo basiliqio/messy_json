@@ -99,7 +99,7 @@
 //! #    false,
 //! # ))));
 //! let mut deserializer = serde_json::Deserializer::from_str(DUMMY_OBJ);
-//! let val: MessyJsonValueContainer = schema.builder(false).deserialize(&mut deserializer).unwrap();
+//! let val: MessyJsonValueContainer = schema.builder(MessyJsonSettings::default()).deserialize(&mut deserializer).unwrap();
 //!
 //! println!("{:#?}", val.inner());
 //! ```
@@ -118,6 +118,7 @@ mod object;
 mod scalar;
 mod schema;
 mod schema_visitor;
+mod settings;
 mod value;
 
 #[cfg(test)]
@@ -130,6 +131,7 @@ pub use scalar::MessyJsonScalar;
 pub use schema::{
     MessyJson, MessyJsonBuilder, MessyJsonExpected, MessyJsonInner, MessyJsonObjectBuilder,
 };
+pub use settings::MessyJsonSettings;
 pub use value::{
     MessyJsonArrayValue, MessyJsonNullType, MessyJsonObjectValue, MessyJsonValue,
     MessyJsonValueContainer,

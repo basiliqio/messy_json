@@ -6,7 +6,7 @@ document that MUST be either an object/an array
 - `MessyJsonObject` can be `into` `MessyJson` without further allocation
 - `MessyJsonObject` has a its own builder object
 - New trait added to factorize the common points between `MessyJsonObjectBuilder` and `MessyJsonBuilder`
-- Parameter to make a builder where all fields are optional
+- Added a setting object to the builder allowing for more nuanced deserializing
 - Added the `Hash` trait on schema objects
 - Added support for `uuid` behind a feature flag
 - Every keys are `ArcStr`
