@@ -1,8 +1,9 @@
 ## [Unreleased]
+
+## [0.2.0] - 2021-04-28
 ### Added
 - Comparaison function between `MessyJsonValue` and `serde_json::Value`
-- `MessyJsonObjectValue` and `MessyJsonArrayValue` to facilitate describing a
-document that MUST be either an object/an array
+- `MessyJsonObjectValue` and `MessyJsonArrayValue` to facilitate describing a document that MUST be either an object/an array
 - `MessyJsonObject` can be `into` `MessyJson` without further allocation
 - `MessyJsonObject` has a its own builder object
 - New trait added to factorize the common points between `MessyJsonObjectBuilder` and `MessyJsonBuilder`

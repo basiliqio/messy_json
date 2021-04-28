@@ -34,10 +34,10 @@
 //!
 //! let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
 //!    vec![(
-//!        gen_key("hello"),
+//!        arcstr::literal!("hello"),
 //!        MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
 //!            vec![(
-//!                gen_key("world"),
+//!                arcstr::literal!("world"),
 //!                MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
 //!            )]
 //!            .into_iter()
@@ -46,7 +46,7 @@
 //!        )))),
 //!    ),
 //! (
-//!     gen_key("an_optional_one"),
+//!     arcstr::literal!("an_optional_one"),
 //!     MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true)))
 //! )]
 //!    .into_iter()
@@ -79,10 +79,10 @@
 //!
 //! # let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
 //! #    vec![(
-//! #        gen_key("hello"),
+//! #        arcstr::literal!("hello"),
 //! #        MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
 //! #            vec![(
-//! #                gen_key("world"),
+//! #                arcstr::literal!("world"),
 //! #                MessyJson::from(MessyJsonInner::Number(MessyJsonNumeric::new(MessyJsonNumberType::U64, false))),
 //! #            )]
 //! #            .into_iter()
@@ -91,7 +91,7 @@
 //! #        )))),
 //! #    ),
 //! # (
-//! #     gen_key("an_optional_one"),
+//! #     arcstr::literal!("an_optional_one"),
 //! #     MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true)))
 //! # )]
 //! #    .into_iter()
@@ -126,7 +126,9 @@ mod tests;
 
 pub use array::MessyJsonArray;
 pub use number::{MessyJsonNumberType, MessyJsonNumeric};
-pub use object::{gen_key, KeyType, MessyJsonObject, MessyJsonObjectInner};
+#[cfg(test)]
+pub use object::gen_key;
+pub use object::{KeyType, MessyJsonObject, MessyJsonObjectInner};
 pub use scalar::MessyJsonScalar;
 pub use schema::{
     MessyJson, MessyJsonBuilder, MessyJsonExpected, MessyJsonInner, MessyJsonObjectBuilder,

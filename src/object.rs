@@ -3,10 +3,14 @@ use crate::schema::MessyJsonObjectTrait;
 
 pub type KeyType = ArcStr;
 
+/// ## Wrapper for [MessyJsonObjectInner](MessyJsonObjectInner)
+///
+/// Wrapping it in an [Arc](std::sync::Arc)
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Default)]
 pub struct MessyJsonObject(Arc<MessyJsonObjectInner>);
 
 impl MessyJsonObject {
+    /// Create a builder object from the current object
     #[inline]
     pub fn builder(&self, settings: MessyJsonSettings) -> MessyJsonObjectBuilder {
         MessyJsonObjectBuilder::new(self, settings)
@@ -29,8 +33,7 @@ impl From<MessyJsonObjectInner> for MessyJsonObject {
 
 /// ## JSON Object schema value
 ///
-/// Describe a JSON Object at runtime specify if the object may be null and its
-/// properties
+/// Describe a JSON Object at runtime
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Default)]
 pub struct MessyJsonObjectInner {
     optional: bool,
@@ -65,6 +68,7 @@ impl MessyJsonObjectInner {
     }
 }
 
+#[cfg(test)]
 pub fn gen_key(k: &str) -> super::object::KeyType {
     ArcStr::from(k)
 }

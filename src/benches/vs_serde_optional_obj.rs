@@ -36,11 +36,11 @@ fn gen_messy_json_schema_optional_obj() -> MessyJson {
         MessyJsonObjectInner::new(
             vec![
                 (
-                    gen_key("hello"),
+                    arcstr::literal!("hello"),
                     MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
                         MessyJsonObjectInner::new(
                             vec![(
-                                gen_key("hola"),
+                                arcstr::literal!("hola"),
                                 MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(
                                     false,
                                 ))),
@@ -52,15 +52,15 @@ fn gen_messy_json_schema_optional_obj() -> MessyJson {
                     ))),
                 ),
                 (
-                    gen_key("coucou"),
+                    arcstr::literal!("coucou"),
                     MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true))),
                 ),
                 (
-                    gen_key("coucou1"),
+                    arcstr::literal!("coucou1"),
                     MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true))),
                 ),
                 (
-                    gen_key("coucou2"),
+                    arcstr::literal!("coucou2"),
                     MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(true))),
                 ),
             ]

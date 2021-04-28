@@ -3,6 +3,7 @@
 /// Simple struct to specifiy if a JSON scalar value is optional or not
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct MessyJsonScalar {
+    /// `true` if optional
     pub optional: bool,
 }
 

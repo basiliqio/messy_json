@@ -17,6 +17,9 @@ pub enum MessyJsonInner {
     #[cfg(feature = "uuid")]
     Uuid(MessyJsonScalar),
 }
+/// Wrapper for [MessyJsonInner](MessyJsonInner)
+///
+/// Wrapping it in an [Arc](std::sync::Arc)
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct MessyJson(Arc<MessyJsonInner>);
 
@@ -35,6 +38,7 @@ impl MessyJson {
     }
 }
 
+/// An expected object, set when encountering a null value.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum MessyJsonExpected {
     Root(MessyJson),
@@ -92,7 +96,7 @@ impl From<&MessyJsonNumeric> for MessyJsonInner {
     }
 }
 
-/// ## Schema deserializer of a JSON Value
+/// Schema deserializer of a JSON Value
 ///
 /// This struct takes a reference to a [MessyJson](MessyJson) and expose `serde`'s
 /// deserialization trait.
@@ -102,6 +106,7 @@ pub struct MessyJsonBuilder {
     settings: MessyJsonSettings,
 }
 
+/// Builder for [MessyJsonObject](MessyJsonObject)
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessyJsonObjectBuilder {
     schema: MessyJsonObject,

@@ -7,10 +7,12 @@ use std::ops::Deref;
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct MessyJsonObjectValue<'a>(BTreeMap<ArcStr, MessyJsonValue<'a>>);
 
-/// ## Deserialized JSON Object Value
+/// ## Deserialized JSON Null Value
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum MessyJsonNullType {
+    /// A field explicitly set to `null`
     Null,
+    /// an absent field
     Absent,
 }
 
@@ -23,6 +25,7 @@ impl<'a> Deref for MessyJsonObjectValue<'a> {
 }
 
 impl<'a> MessyJsonObjectValue<'a> {
+    /// Take the inner value, consuming the object
     pub fn take(self) -> BTreeMap<ArcStr, MessyJsonValue<'a>> {
         self.0
     }

@@ -34,11 +34,11 @@ fn gen_messy_json_schema() -> MessyJson {
     MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
         MessyJsonObjectInner::new(
             vec![(
-                gen_key("hello"),
+                arcstr::literal!("hello"),
                 MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
                     MessyJsonObjectInner::new(
                         vec![(
-                            gen_key("hola"),
+                            arcstr::literal!("hola"),
                             MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false))),
                         )]
                         .into_iter()
