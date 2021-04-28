@@ -35,13 +35,16 @@ This crate approaches this problems in a simple manner, resembling [`serde_json`
 ## Example
 
 ```rust
-    let nested_string = MessyJson::String(MessyJsonScalar::new(false));
-    let schema: MessyJson = MessyJson::Obj(Box::new(MessyJsonObject::new(
-        vec![("hello".to_string(), nested_string)]
+	use messy_json::*;
+	use serde::de::DeserializeSeed;
+
+    let nested_string = MessyJson::from(MessyJsonInner::String(MessyJsonScalar::new(false)));
+    let schema: MessyJson = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(MessyJsonObjectInner::new(
+        vec![(arcstr::literal!("hello"), nested_string)]
             .into_iter()
             .collect(),
         false,
-    )));
+    ))));
     let value = r#"
 	{
 		"hello": "world"
@@ -49,7 +52,7 @@ This crate approaches this problems in a simple manner, resembling [`serde_json`
 	"#;
 
 	let mut deserializer = serde_json::Deserializer::from_str(value);
-	let parsed: MessyJsonValueContainer = schema.builder().deserialize(&mut deserializer).unwrap();
+	let parsed: MessyJsonValueContainer = schema.builder(MessyJsonSettings::default()).deserialize(&mut deserializer).unwrap();
 	
 	println!("{:#?}", parsed)
 ```
@@ -65,10 +68,10 @@ This gap could be filled using a custom arena-based allocator, like [Bumpalo](ht
 This crate implements benchmarks.
 The following graphs were run on a machine with the following specs:
 
-- CPU		: Intel i9-9900K @ 5Ghz
+- CPU		: Intel i9-9900K @ 4.7Ghz
 - RAM		: 32 Gb RAM @ 2133 Mhz
-- Kernel	: `5.10.11-arch1-1`
-- Rust		: `rustc 1.49.0 (e1884a8e3 2020-12-29)`
+- Kernel	: `5.11.16-arch1-1`
+- Rust		: `rustc 1.51.0 (2fd73fabe 2021-03-23)`
 
 In the following benchmarks, the `messy_json` crate is compared with deserializer from the [`serde_json`'s `Value`](https://docs.serde.rs/serde_json/value/enum.Value.html) and macro-generated deserializer using `serde`'s `derive`.
 
@@ -88,6 +91,8 @@ The following benchmark consists of deserializing the JSON Document
 the accepted schema should looks like the following:
 
 ```rust
+use std::borrow::Cow;
+
 struct DummyObjNested<'a> {
     hola: Cow<'a, str>,
 }
@@ -120,6 +125,9 @@ The following benchmark consists of deserializing the JSON Document
 the accepted schema should looks like the following:
 
 ```rust
+use serde::{Serialize, Deserialize};
+use std::borrow::Cow;
+
 #[derive(Serialize, Deserialize)]
 struct PartialObjNested<'a> {
     hola: Cow<'a, str>,
@@ -153,6 +161,9 @@ The following benchmark consists of deserializing the JSON Document
 the accepted schema should looks like the following:
 
 ```rust
+use std::borrow::Cow;
+use serde::{Serialize, Deserialize};
+
 #[derive(Serialize, Deserialize)]
 struct SimpleObj<'a> {
     hello: Cow<'a, str>,

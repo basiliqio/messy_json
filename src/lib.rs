@@ -103,8 +103,11 @@
 //!
 //! println!("{:#?}", val.inner());
 //! ```
-
 #![warn(clippy::all)]
+
+#[cfg(doctest)]
+doc_comment::doctest!("../README.md");
+
 use arcstr::ArcStr;
 use serde::de::{DeserializeSeed, Deserializer, MapAccess, SeqAccess, Visitor};
 use std::borrow::Cow;
