@@ -116,7 +116,7 @@ impl<'de> Visitor<'de> for MessyJsonBuilder {
             )),
             #[cfg(feature = "uuid")]
             schema::MessyJsonInner::Uuid(_) => Ok(MessyJsonValueContainer::new(
-                MessyJsonValue::Uuid(Cow::Owned(_uuid::Uuid::parse_str(v).map_err(|e| {
+                MessyJsonValue::Uuid(Cow::Owned(feat_uuid::Uuid::parse_str(v).map_err(|e| {
                     serde::de::Error::custom(format!("Failed to deserialize UUID: {}", e))
                 })?)),
             )),
