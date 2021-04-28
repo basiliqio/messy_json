@@ -3,7 +3,7 @@ use super::*;
 #[test]
 fn uuid_simple() {
     let nested_string = MessyJson::from(MessyJsonInner::Uuid(MessyJsonScalar::new(false)));
-    let test_uuid = _uuid::Uuid::parse_str("31ee8240-630b-416a-8c54-0e2a0d070488").unwrap();
+    let test_uuid = feat_uuid::Uuid::parse_str("31ee8240-630b-416a-8c54-0e2a0d070488").unwrap();
     let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
         MessyJsonObjectInner::new(
             vec![(gen_key("hello"), nested_string)]
@@ -76,7 +76,7 @@ fn bad_uuid() {
 #[test]
 fn optional_uuid_present() {
     let nested_string = MessyJson::from(MessyJsonInner::Uuid(MessyJsonScalar::new(true)));
-    let test_uuid = _uuid::Uuid::parse_str("31ee8240-630b-416a-8c54-0e2a0d070488").unwrap();
+    let test_uuid = feat_uuid::Uuid::parse_str("31ee8240-630b-416a-8c54-0e2a0d070488").unwrap();
     let schema = MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
         MessyJsonObjectInner::new(
             vec![(gen_key("hello"), nested_string)]
