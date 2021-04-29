@@ -2,11 +2,11 @@
 
 **Rust JSON Parser for dynamically structured documents**
 
-<a href="https://gitlab.com/basiliq/messy_json/-/pipelines" alt="Gitlab pipeline status">
-  <img src="https://img.shields.io/gitlab/pipeline/basiliq/messy_json/master">
+<a href="https://gitlab.com/basiliqio/messy_json/-/pipelines" alt="Gitlab pipeline status">
+  <img src="https://img.shields.io/gitlab/pipeline/basiliqio/messy_json/main">
 </a>
-<a href="https://codecov.io/gl/basiliq/messy_json" alt="Codecov">
-  <img src="https://img.shields.io/codecov/c/gitlab/basiliq/messy_json?token=tnPbnqeTHj">
+<a href="https://codecov.io/gl/basiliqio/messy_json" alt="Codecov">
+  <img src="https://img.shields.io/codecov/c/github/basiliqio/messy_json">
 </a>
 <a href="https://crates.io/crates/messy_json" alt="Crates.io version">
   <img src="https://img.shields.io/crates/v/messy_json">
