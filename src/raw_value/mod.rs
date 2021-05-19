@@ -2,6 +2,8 @@ use super::*;
 
 mod deserialize;
 mod deserializer;
+#[cfg(test)]
+mod tests;
 
 pub use deserialize::MessyJsonValueRawVisitor;
 
