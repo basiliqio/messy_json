@@ -11,18 +11,21 @@ where
     V: MessyJsonObjectTrait,
 {
     let mut res: BTreeMap<ArcStr, MessyJsonValue> = BTreeMap::new();
-    while let Some(key_seed) = seq.next_key::<&str>()? {
-        let (key_str, val_schema) = obj.properties().get_key_value(key_seed).ok_or_else(|| {
-            serde::de::Error::custom(format!(
-                "The key `{}` is unknown. The expected keys were `[ {} ]`",
-                key_seed,
-                obj.properties()
-                    .keys()
-                    .map(|s| s.as_str())
-                    .collect::<Vec<&str>>()
-                    .join(", ")
-            ))
-        })?;
+    while let Some(key_seed) = seq.next_key::<Cow<'de, str>>()? {
+        let (key_str, val_schema) = obj
+            .properties()
+            .get_key_value(key_seed.as_ref())
+            .ok_or_else(|| {
+                serde::de::Error::custom(format!(
+                    "The key `{}` is unknown. The expected keys were `[ {} ]`",
+                    key_seed,
+                    obj.properties()
+                        .keys()
+                        .map(|s| s.as_str())
+                        .collect::<Vec<&str>>()
+                        .join(", ")
+                ))
+            })?;
         let nested_val = visitor.new_nested(&val_schema, *visitor.settings());
         res.insert(key_str.clone(), seq.next_value_seed(nested_val)?.take());
     }
@@ -122,6 +125,50 @@ impl<'de> Visitor<'de> for MessyJsonBuilder {
             )),
             _ => Err(serde::de::Error::invalid_type(
                 serde::de::Unexpected::Str(v),
+                &"String",
+            )),
+        }
+    }
+
+    #[inline]
+    fn visit_str<A>(self, v: &str) -> Result<Self::Value, A>
+    where
+        A: serde::de::Error,
+    {
+        match self.inner().deref() {
+            schema::MessyJsonInner::String(_) => Ok(MessyJsonValueContainer::new(
+                MessyJsonValue::String(Cow::from(v.to_string())),
+            )),
+            #[cfg(feature = "uuid")]
+            schema::MessyJsonInner::Uuid(_) => Ok(MessyJsonValueContainer::new(
+                MessyJsonValue::Uuid(Cow::Owned(feat_uuid::Uuid::parse_str(v).map_err(|e| {
+                    serde::de::Error::custom(format!("Failed to deserialize UUID: {}", e))
+                })?)),
+            )),
+            _ => Err(serde::de::Error::invalid_type(
+                serde::de::Unexpected::Str(v),
+                &"String",
+            )),
+        }
+    }
+
+    #[inline]
+    fn visit_string<A>(self, v: String) -> Result<Self::Value, A>
+    where
+        A: serde::de::Error,
+    {
+        match self.inner().deref() {
+            schema::MessyJsonInner::String(_) => Ok(MessyJsonValueContainer::new(
+                MessyJsonValue::String(Cow::from(v)),
+            )),
+            #[cfg(feature = "uuid")]
+            schema::MessyJsonInner::Uuid(_) => Ok(MessyJsonValueContainer::new(
+                MessyJsonValue::Uuid(Cow::Owned(feat_uuid::Uuid::parse_str(v.as_str()).map_err(
+                    |e| serde::de::Error::custom(format!("Failed to deserialize UUID: {}", e)),
+                )?)),
+            )),
+            _ => Err(serde::de::Error::invalid_type(
+                serde::de::Unexpected::Str(v.as_str()),
                 &"String",
             )),
         }

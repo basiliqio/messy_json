@@ -12,8 +12,8 @@ use super::*;
 /// This objects cannot describe multiple types of childrens
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct MessyJsonArray {
-    optional: bool,
     items: MessyJson,
+    optional: bool,
 }
 
 impl MessyJsonArray {

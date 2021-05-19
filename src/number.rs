@@ -11,7 +11,7 @@ pub struct MessyJsonNumeric {
 impl MessyJsonNumeric {
     /// Create a new [MessyJsonNumeric](MessyJsonNumeric)
     pub fn new(type_: MessyJsonNumberType, optional: bool) -> Self {
-        MessyJsonNumeric { type_, optional }
+        MessyJsonNumeric { optional, type_ }
     }
 }
 

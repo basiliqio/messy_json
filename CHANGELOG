@@ -1,4 +1,6 @@
 ## [Unreleased]
+### Added
+- Support deserializing from owned values
 
 ## [0.2.0] - 2021-04-28
 ### Added
