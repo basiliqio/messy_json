@@ -14,7 +14,8 @@ pub use deserialize::MessyJsonValueRawVisitor;
 /// It is structured like [Serde JSON's `Value`](serde_json::Value).
 ///
 /// Every string is borrowed rather than cloned
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize)]
+#[serde(untagged)]
 pub enum MessyJsonValueRaw<'a> {
     Array(Vec<MessyJsonValueRaw<'a>>),
     Bool(bool),
