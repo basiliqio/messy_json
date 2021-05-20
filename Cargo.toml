@@ -1,6 +1,6 @@
 [package]
 name = "messy_json"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["Francis Le Roy <francis.leroy@protonmail.ch>"]
 edition = "2018"
 keywords = ["serde", "json", "dynamic"]

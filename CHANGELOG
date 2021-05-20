@@ -1,4 +1,4 @@
-## [Unreleased]
+## [0.2.3] - 2021-05-20
 ### Added
 - Support deserializing from owned values
 - New structure `MessyJsonValueRaw` that mimics `serde_json::Value` but zero-copy
