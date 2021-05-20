@@ -3,7 +3,6 @@ use std::borrow::Cow;
 use std::time::Duration;
 
 extern crate messy_json;
-use arcstr::{literal, ArcStr};
 use messy_json::*;
 mod vs_serde_dummy_obj;
 mod vs_serde_obj;

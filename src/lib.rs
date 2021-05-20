@@ -118,6 +118,7 @@ use std::sync::Arc;
 mod array;
 mod number;
 mod object;
+mod raw_value;
 mod scalar;
 mod schema;
 mod schema_visitor;
@@ -132,6 +133,7 @@ pub use number::{MessyJsonNumberType, MessyJsonNumeric};
 #[cfg(test)]
 pub use object::gen_key;
 pub use object::{KeyType, MessyJsonObject, MessyJsonObjectInner};
+pub use raw_value::{MessyJsonValueRaw, MessyJsonValueRawVisitor};
 pub use scalar::MessyJsonScalar;
 pub use schema::{
     MessyJson, MessyJsonBuilder, MessyJsonExpected, MessyJsonInner, MessyJsonObjectBuilder,

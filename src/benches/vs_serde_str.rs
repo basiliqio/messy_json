@@ -21,6 +21,10 @@ fn parse_serde_value(input: &str) -> Value {
     serde_json::from_str(input).unwrap()
 }
 
+fn parse_messy_json_raw(input: &str) -> MessyJsonValueRaw {
+    serde_json::from_str(input).unwrap()
+}
+
 fn gen_messy_json_schema() -> MessyJson {
     MessyJson::from(MessyJsonInner::Obj(MessyJsonObject::from(
         MessyJsonObjectInner::new(
@@ -64,6 +68,11 @@ pub fn criterion_benchmark(c: &mut Criterion) {
             let prepared = gen_messy_json_schema();
             b.iter(|| parse_messy_json(&prepared, i))
         },
+    );
+    group.bench_with_input(
+        criterion::BenchmarkId::new("deser_messy_json_raw", "simple_obj"),
+        &SIMPLE_OBJ,
+        |b, i| b.iter(|| parse_messy_json_raw(i)),
     );
     group.finish();
 }
